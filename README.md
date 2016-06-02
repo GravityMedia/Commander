@@ -1,3 +1,3 @@
 # Commander
 
-Object oriented command builder library for PHP.
+Commander is a command queue manager/runner for PHP.

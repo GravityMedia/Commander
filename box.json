@@ -1,0 +1,22 @@
+{
+    "chmod": "0755",
+    "directories": [
+        "src"
+    ],
+    "files": [
+        "LICENSE.md"
+    ],
+    "finder": [
+        {
+            "name": "*.php",
+            "exclude": [
+                "Tests"
+            ],
+            "in": "vendor"
+        }
+    ],
+    "git-version": "git-version",
+    "main": "bin/commander.php",
+    "output": "build/commander.phar",
+    "stub": true
+}
