@@ -10,14 +10,14 @@ namespace GravityMedia\Commander\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Process entity class
+ * Target entity class
  *
  * @package GravityMedia\Commander\Doctrine\Entity
  *
  * @ORM\Entity
- * @ORM\Table(name="process")
+ * @ORM\Table(name="target")
  **/
-class ProcessEntity
+class TaskEntity
 {
     /**
      * @ORM\Id

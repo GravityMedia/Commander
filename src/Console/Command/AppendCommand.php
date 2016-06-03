@@ -9,7 +9,7 @@ namespace GravityMedia\Commander\Console\Command;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use GravityMedia\Commander\Console\Helper\EntityManagerHelper;
-use GravityMedia\Commander\Entity\ProcessEntity;
+use GravityMedia\Commander\Entity\TaskEntity;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,8 +30,8 @@ class AppendCommand extends Command
 
         $this
             ->setName('append')
-            ->setDescription('Append command')
-            ->addArgument('commandline', InputArgument::REQUIRED, 'The commandline to append');
+            ->setDescription('Append task')
+            ->addArgument('commandline', InputArgument::REQUIRED, 'The commandline to append with the task');
     }
 
     /**
@@ -39,7 +39,7 @@ class AppendCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $entity = new ProcessEntity();
+        $entity = new TaskEntity();
         $entity->setCommandline($input->getArgument('commandline'));
 
         $config = $this->getCommanderConfig();
