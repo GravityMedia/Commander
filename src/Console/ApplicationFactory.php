@@ -7,7 +7,7 @@
 
 namespace GravityMedia\Commander\Console;
 
-use GravityMedia\Commander\Console\Command\AppendCommand;
+use GravityMedia\Commander\Console\Command\AddCommand;
 use GravityMedia\Commander\Console\Helper\ConfigSerializerHelper;
 use GravityMedia\Commander\Console\Helper\EntityManagerHelper;
 use Interop\Container\ContainerInterface;
@@ -39,7 +39,7 @@ class ApplicationFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $application = new Application();
-        $application->add($container->get(AppendCommand::class));
+        $application->add($container->get(AddCommand::class));
 
         $helperSet = $application->getHelperSet();
         $helperSet->set($container->get(ConfigSerializerHelper::class));

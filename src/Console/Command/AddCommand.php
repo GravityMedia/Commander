@@ -7,7 +7,7 @@
 
 namespace GravityMedia\Commander\Console\Command;
 
-use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\ORM\EntityManagerInterface;
 use GravityMedia\Commander\Console\Helper\EntityManagerHelper;
 use GravityMedia\Commander\Entity\TaskEntity;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,11 +15,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Append command class
+ * Add command class
  *
  * @package GravityMedia\Commander\Console\Command
  */
-class AppendCommand extends Command
+class AddCommand extends Command
 {
     /**
      * {@inheritdoc}
@@ -29,9 +29,9 @@ class AppendCommand extends Command
         parent::configure();
 
         $this
-            ->setName('append')
-            ->setDescription('Append task')
-            ->addArgument('commandline', InputArgument::REQUIRED, 'The commandline to append with the task');
+            ->setName('add')
+            ->setDescription('Add task')
+            ->addArgument('commandline', InputArgument::REQUIRED, 'The commandline which represents the task');
     }
 
     /**
@@ -39,21 +39,16 @@ class AppendCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $config = $this->getCommanderConfig();
+
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $this->getHelper(EntityManagerHelper::class)->createEntityManager($config);
+        $this->updateSchema($entityManager);
+
         $entity = new TaskEntity();
         $entity->setCommandline($input->getArgument('commandline'));
 
-        $config = $this->getCommanderConfig();
-
-        /** @var \Doctrine\ORM\EntityManager $entityManager */
-        $entityManager = $this->getHelper(EntityManagerHelper::class)->createEntityManager($config);
-        $classes = $entityManager->getMetadataFactory()->getAllMetadata();
-
-        $schemaTool = new SchemaTool($entityManager);
-        $sql = $schemaTool->getUpdateSchemaSql($classes);
-
-        $output->writeln($sql);
-
-        //$entityManager->persist($entity);
-        //$entityManager->flush();
+        $entityManager->persist($entity);
+        $entityManager->flush();
     }
 }
