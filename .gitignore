@@ -1,3 +1,6 @@
+.idea/dataSources.ids
+.idea/dataSources.local.xml
+.idea/dataSources.xml
 .idea/workspace.xml
 build/
 cache/
