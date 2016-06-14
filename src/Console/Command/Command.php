@@ -7,6 +7,8 @@
 
 namespace GravityMedia\Commander\Console\Command;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use GravityMedia\Commander\Config\CommanderConfig;
 use GravityMedia\Commander\Console\Helper\ConfigSerializerHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -68,5 +70,18 @@ class Command extends \Symfony\Component\Console\Command\Command
         }
 
         return $this->commanderConfig;
+    }
+
+    /**
+     * Update schema
+     *
+     * @param EntityManagerInterface $entityManager
+     */
+    protected function updateSchema(EntityManagerInterface $entityManager)
+    {
+        $classes = $entityManager->getMetadataFactory()->getAllMetadata();
+
+        $schemaTool = new SchemaTool($entityManager);
+        $schemaTool->updateSchema($classes);
     }
 }
