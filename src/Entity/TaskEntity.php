@@ -7,6 +7,7 @@
 
 namespace GravityMedia\Commander\Entity;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,26 +16,48 @@ use Doctrine\ORM\Mapping as ORM;
  * @package GravityMedia\Commander\Doctrine\Entity
  *
  * @ORM\Entity
- * @ORM\Table(name="target")
+ * @ORM\Table(name="task")
  **/
 class TaskEntity
 {
     /**
+     * The ID
+     *
+     * @var string
+     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
      **/
-    protected $id;
+    private $id;
 
     /**
+     * The commandline
+     *
+     * @var string
+     *
      * @ORM\Column(type="string")
      **/
-    protected $commandline;
+    private $commandline;
 
     /**
+     * The PID
+     *
+     * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      **/
-    protected $pid;
+    private $pid;
+
+    /**
+     * The created at timestamp
+     *
+     * @var \DateTime $createdAt
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
 
     /**
      * Get ID
@@ -66,6 +89,7 @@ class TaskEntity
     public function setCommandline($commandline)
     {
         $this->commandline = $commandline;
+        return $this;
     }
 
     /**
@@ -81,12 +105,36 @@ class TaskEntity
     /**
      * Set PID
      *
-     * @param string $pid
+     * @param int $pid
      *
      * @return $this
      */
     public function setPid($pid)
     {
         $this->pid = $pid;
+        return $this;
+    }
+
+    /**
+     * Get created at timestamp
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set created at timestamp
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return $this
+     */
+    public function setCreatedAt(\DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
+        return $this;
     }
 }
