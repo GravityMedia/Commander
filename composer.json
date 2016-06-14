@@ -1,6 +1,6 @@
 {
     "name": "gravitymedia/commander",
-    "description": "Commander is a command queue manager/runner for PHP.",
+    "description": "Commander is a task manager/runner application for PHP.",
     "license": "MIT",
     "authors": [
         {
@@ -13,6 +13,7 @@
         "php": ">=5.6",
         "ext-pdo_sqlite": "*",
         "doctrine/orm": "^2.5",
+        "gedmo/doctrine-extensions": "^2.4",
         "symfony/console": "^2.8",
         "symfony/process": "^2.8",
         "symfony/serializer": "^2.8",
