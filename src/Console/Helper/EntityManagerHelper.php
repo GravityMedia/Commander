@@ -13,9 +13,15 @@ use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\Common\EventManager;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Gedmo\DoctrineExtensions;
+use Gedmo\Timestampable\TimestampableListener;
 use GravityMedia\Commander\Config\CommanderConfig;
 use Symfony\Component\Console\Helper\Helper;
 
@@ -56,7 +62,7 @@ class EntityManagerHelper extends Helper
      *
      * @param CommanderConfig $config
      *
-     * @return AnnotationDriver
+     * @return MappingDriver
      */
     protected function createAnnotationDriver(CommanderConfig $config)
     {
@@ -64,9 +70,15 @@ class EntityManagerHelper extends Helper
             __DIR__ . '/../../../vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
         );
 
+        $driverChain = new MappingDriverChain();
         $reader = new CachedReader(new AnnotationReader(), $this->createCache($config));
 
-        return new AnnotationDriver($reader, [__DIR__ . '/../../Entity']);
+        DoctrineExtensions::registerAbstractMappingIntoDriverChainORM($driverChain, $reader);
+
+        $annotationDriver = new AnnotationDriver($reader, [__DIR__ . '/../../Entity']);
+        $driverChain->addDriver($annotationDriver, 'GravityMedia\Commander\Entity');
+
+        return $driverChain;
     }
 
     /**
@@ -86,7 +98,7 @@ class EntityManagerHelper extends Helper
         $configuration = new Configuration();
         $configuration->setAutoGenerateProxyClasses(true);
         $configuration->setProxyDir($proxyDirectory);
-        $configuration->setProxyNamespace('Evolver\ScheduleUtilModule\Entity');
+        $configuration->setProxyNamespace('GravityMedia\Commander\Entity');
         $configuration->setMetadataDriverImpl($this->createAnnotationDriver($config));
         $configuration->setMetadataCacheImpl($this->createCache($config));
         $configuration->setQueryCacheImpl($this->createCache($config));
@@ -101,7 +113,7 @@ class EntityManagerHelper extends Helper
      *
      * @param CommanderConfig $config
      *
-     * @return EntityManager
+     * @return EntityManagerInterface
      */
     public function createEntityManager(CommanderConfig $config)
     {
@@ -110,6 +122,18 @@ class EntityManagerHelper extends Helper
             'path' => $config->getDatabasePath()
         ];
 
-        return EntityManager::create($connection, $this->createEntityManagerConfiguration($config));
+        $configuration = $this->createEntityManagerConfiguration($config);
+
+        $metadataDriver = $configuration->getMetadataDriverImpl();
+
+        $timestampableListener = new TimestampableListener();
+        if ($metadataDriver instanceof AnnotationDriver) {
+            $timestampableListener->setAnnotationReader($metadataDriver->getReader());
+        }
+
+        $eventManager = new EventManager();
+        $eventManager->addEventSubscriber($timestampableListener);
+
+        return EntityManager::create($connection, $configuration, $eventManager);
     }
 }
