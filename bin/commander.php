@@ -30,9 +30,8 @@ unset($dir);
  */
 use GravityMedia\Commander\Console\Application;
 use GravityMedia\Commander\Console\ApplicationFactory;
-use GravityMedia\Commander\Console\Command\AddCommand;
-use GravityMedia\Commander\Console\Helper\ConfigSerializerHelper;
-use GravityMedia\Commander\Console\Helper\EntityManagerHelper;
+use GravityMedia\Commander\Console\Command;
+use GravityMedia\Commander\Console\Helper;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\ServiceManager\ServiceManager;
 
@@ -42,9 +41,10 @@ use Zend\ServiceManager\ServiceManager;
 $serviceManager = new ServiceManager([
     'factories' => [
         Application::class => ApplicationFactory::class,
-        AddCommand::class => InvokableFactory::class,
-        ConfigSerializerHelper::class => InvokableFactory::class,
-        EntityManagerHelper::class => InvokableFactory::class
+        Command\AddCommand::class => InvokableFactory::class,
+        Command\ShowCommand::class => InvokableFactory::class,
+        Helper\ConfigSerializerHelper::class => InvokableFactory::class,
+        Helper\EntityManagerHelper::class => InvokableFactory::class
     ]
 ]);
 

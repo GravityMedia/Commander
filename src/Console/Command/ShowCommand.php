@@ -9,18 +9,17 @@ namespace GravityMedia\Commander\Console\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
 use GravityMedia\Commander\Console\Helper\EntityManagerHelper;
-use GravityMedia\Commander\Entity\TaskEntity;
 use GravityMedia\Commander\TaskManager;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Add command class
+ * Show command class
  *
  * @package GravityMedia\Commander\Console\Command
  */
-class AddCommand extends Command
+class ShowCommand extends Command
 {
     /**
      * {@inheritdoc}
@@ -30,9 +29,8 @@ class AddCommand extends Command
         parent::configure();
 
         $this
-            ->setName('task:add')
-            ->setDescription('Add task')
-            ->addArgument('commandline', InputArgument::REQUIRED, 'The commandline which represents the task');
+            ->setName('tasks:show')
+            ->setDescription('Show tasks');
     }
 
     /**
@@ -47,9 +45,18 @@ class AddCommand extends Command
         $taskManager = new TaskManager($entityManager);
         $taskManager->updateSchema();
 
-        $entity = new TaskEntity();
-        $entity->setCommandline($input->getArgument('commandline'));
+        $table = new Table($output);
+        $table->setHeaders(['ID', 'Commandline', 'PID', 'Created At']);
 
-        $taskManager->addTask($entity);
+        foreach ($taskManager->getTasks() as $task) {
+            $table->addRow([
+                $task->getId(),
+                $task->getCommandline(),
+                $task->getPid(),
+                $task->getCreatedAt()->format('r')
+            ]);
+        }
+
+        $table->render();
     }
 }

@@ -7,9 +7,8 @@
 
 namespace GravityMedia\Commander\Console;
 
-use GravityMedia\Commander\Console\Command\AddCommand;
-use GravityMedia\Commander\Console\Helper\ConfigSerializerHelper;
-use GravityMedia\Commander\Console\Helper\EntityManagerHelper;
+use GravityMedia\Commander\Console\Command;
+use GravityMedia\Commander\Console\Helper;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
@@ -39,11 +38,12 @@ class ApplicationFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $application = new Application();
-        $application->add($container->get(AddCommand::class));
+        $application->add($container->get(Command\AddCommand::class));
+        $application->add($container->get(Command\ShowCommand::class));
 
         $helperSet = $application->getHelperSet();
-        $helperSet->set($container->get(ConfigSerializerHelper::class));
-        $helperSet->set($container->get(EntityManagerHelper::class));
+        $helperSet->set($container->get(Helper\ConfigSerializerHelper::class));
+        $helperSet->set($container->get(Helper\EntityManagerHelper::class));
 
         return $application;
     }
