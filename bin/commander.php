@@ -43,6 +43,7 @@ $serviceManager = new ServiceManager([
     'factories' => [
         Console\Application::class => Console\ApplicationFactory::class,
         Command\AddCommand::class => InvokableFactory::class,
+        Command\RunCommand::class => InvokableFactory::class,
         Command\ShowCommand::class => InvokableFactory::class,
         Helper\CommanderConfigLoaderHelper::class => Helper\CommanderConfigLoaderHelperFactory::class,
         Loader\CommanderConfigLoader::class => Loader\CommanderConfigLoaderFactory::class,

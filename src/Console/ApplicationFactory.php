@@ -39,6 +39,7 @@ class ApplicationFactory implements FactoryInterface
     {
         $application = new Application();
         $application->add($container->get(Command\AddCommand::class));
+        $application->add($container->get(Command\RunCommand::class));
         $application->add($container->get(Command\ShowCommand::class));
 
         $helperSet = $application->getHelperSet();

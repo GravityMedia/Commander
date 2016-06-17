@@ -37,11 +37,17 @@ class TaskManager
     /**
      * Get all tasks.
      *
+     * @param array $criteria
+     *
      * @return TaskEntity[]
      */
-    public function getTasks()
+    public function getTasks(array $criteria = [])
     {
-        return $this->entityManager->getRepository(TaskEntity::class)->findAll();
+        if (0 === count($criteria)) {
+            return $this->entityManager->getRepository(TaskEntity::class)->findAll();
+        }
+
+        return $this->entityManager->getRepository(TaskEntity::class)->findBy($criteria);
     }
 
     /**
@@ -74,5 +80,39 @@ class TaskManager
         $this->entityManager->flush();
 
         return $entity;
+    }
+
+    /**
+     * Update PID.
+     *
+     * @param TaskEntity $entity
+     * @param int        $pid
+     *
+     * @return $this
+     */
+    public function updatePid(TaskEntity $entity, $pid)
+    {
+        $entity->setPid($pid);
+
+        $this->entityManager->flush();
+
+        return $this;
+    }
+
+    /**
+     * Update exit code.
+     *
+     * @param TaskEntity $entity
+     * @param int        $exitCode
+     *
+     * @return $this
+     */
+    public function updateExitCode(TaskEntity $entity, $exitCode)
+    {
+        $entity->setExitCode($exitCode);
+
+        $this->entityManager->flush();
+
+        return $this;
     }
 }
