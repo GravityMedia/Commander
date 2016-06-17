@@ -7,16 +7,17 @@
 
 namespace GravityMedia\Commander\Console\Command;
 
-use Doctrine\ORM\EntityManagerInterface;
-use GravityMedia\Commander\Console\Helper\EntityManagerHelper;
+use GravityMedia\Commander\Commander;
 use GravityMedia\Commander\Entity\TaskEntity;
 use GravityMedia\Commander\TaskManager;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Add command class
+ * Add command class.
  *
  * @package GravityMedia\Commander\Console\Command
  */
@@ -32,7 +33,30 @@ class AddCommand extends Command
         $this
             ->setName('task:add')
             ->setDescription('Add task')
-            ->addArgument('commandline', InputArgument::REQUIRED, 'The commandline which represents the task');
+            ->addArgument(
+                'script',
+                InputArgument::REQUIRED,
+                'The script to run with the task'
+            )
+            ->addOption(
+                'priority',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The task priority',
+                TaskEntity::DEFAULT_PRIORITY
+            );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        parent::initialize($input, $output);
+
+        if (false === filter_var($input->getOption('priority'), FILTER_VALIDATE_INT)) {
+            throw new RuntimeException('Value of option "priority" must be an integer');
+        }
     }
 
     /**
@@ -41,15 +65,22 @@ class AddCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $config = $this->getCommanderConfig();
+        $commander = new Commander($config);
+        if (!$commander->isSchemaValid()) {
+            $commander->updateSchema();
+        }
 
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = $this->getHelper(EntityManagerHelper::class)->createEntityManager($config);
+        $entityManager = $commander->getEntityManager();
         $taskManager = new TaskManager($entityManager);
-        $taskManager->updateSchema();
 
-        $entity = new TaskEntity();
-        $entity->setCommandline($input->getArgument('commandline'));
+        $script = $input->getArgument('script');
+        $task = $taskManager->getTask(['script' => $script]);
 
-        $taskManager->addTask($entity);
+        if (null === $task) {
+            $taskManager->addTask($script);
+            return;
+        }
+
+        // ToDo: Update task
     }
 }

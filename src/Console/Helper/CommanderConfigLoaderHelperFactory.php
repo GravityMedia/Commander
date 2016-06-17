@@ -5,10 +5,9 @@
  * @author Daniel Schröder <daniel.schroeder@gravitymedia.de>
  */
 
-namespace GravityMedia\Commander\Console;
+namespace GravityMedia\Commander\Console\Helper;
 
-use GravityMedia\Commander\Console\Command;
-use GravityMedia\Commander\Console\Helper;
+use GravityMedia\Commander\Loader\CommanderConfigLoader;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
@@ -16,20 +15,20 @@ use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
- * Application factory class.
+ * Commander config loader helper factory class
  *
- * @package GravityMedia\Commander\Console
+ * @package GravityMedia\Commander\Serializer
  */
-class ApplicationFactory implements FactoryInterface
+class CommanderConfigLoaderHelperFactory implements FactoryInterface
 {
     /**
-     * Create application object.
+     * Create commander config loader helper object
      *
      * @param  ContainerInterface $container
      * @param  string             $requestedName
      * @param  null|array         $options
      *
-     * @return Application
+     * @return CommanderConfigLoaderHelper
      *
      * @throws ServiceNotFoundException if unable to resolve the service.
      * @throws ServiceNotCreatedException if an exception is raised when creating a service.
@@ -37,13 +36,9 @@ class ApplicationFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $application = new Application();
-        $application->add($container->get(Command\AddCommand::class));
-        $application->add($container->get(Command\ShowCommand::class));
+        /** @var CommanderConfigLoader $commanderConfigLoader */
+        $commanderConfigLoader = $container->get(CommanderConfigLoader::class);
 
-        $helperSet = $application->getHelperSet();
-        $helperSet->set($container->get(Helper\CommanderConfigLoaderHelper::class));
-
-        return $application;
+        return new CommanderConfigLoaderHelper($commanderConfigLoader);
     }
 }

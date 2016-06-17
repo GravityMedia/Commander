@@ -8,39 +8,45 @@
 namespace GravityMedia\Commander\Config;
 
 /**
- * Commander config class
+ * Commander config class.
  *
  * @package GravityMedia\Commander\Config
  */
 class CommanderConfig
 {
     /**
-     * The memory database path
+     * The memory database path.
      */
     const DEFAULT_DATABASE_PATH = 'commander.sqlite';
 
     /**
-     * The default timeout for command execution
+     * The default timeout for command execution.
      */
     const DEFAULT_COMMAND_TIMEOUT = 60;
 
     /**
+     * The database path.
+     *
      * @var string
      */
     private $databasePath;
 
     /**
+     * The database cache directory.
+     *
      * @var string
      */
     private $databaseCacheDirectory;
 
     /**
+     * The command timeout.
+     *
      * @var int
      */
     private $commandTimeout;
 
     /**
-     * Get database path
+     * Get database path.
      *
      * @return string
      */
@@ -54,7 +60,7 @@ class CommanderConfig
     }
 
     /**
-     * Set database path
+     * Set database path.
      *
      * @param string $databasePath
      *
@@ -67,7 +73,7 @@ class CommanderConfig
     }
 
     /**
-     * Get database cache directory
+     * Get database cache directory.
      *
      * @return null|string
      */
@@ -77,7 +83,7 @@ class CommanderConfig
     }
 
     /**
-     * Set database cache directory
+     * Set database cache directory.
      *
      * @param string $databaseCacheDirectory
      *
@@ -90,7 +96,7 @@ class CommanderConfig
     }
 
     /**
-     * Get command timeout
+     * Get command timeout.
      *
      * @return int
      */
@@ -104,7 +110,7 @@ class CommanderConfig
     }
 
     /**
-     * Set command timeout
+     * Set command timeout.
      *
      * @param int $commandTimeout
      *

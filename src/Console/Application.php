@@ -8,24 +8,24 @@
 namespace GravityMedia\Commander\Console;
 
 /**
- * Application class
+ * Application class.
  *
  * @package GravityMedia\Commander\Console
  */
 class Application extends \Symfony\Component\Console\Application
 {
     /**
-     * The name of the application
+     * The name of the application.
      */
     const NAME = 'Commander';
 
     /**
-     * The version of the application
+     * The version of the application.
      */
     const VERSION = '@git-version@';
 
     /**
-     * Create application object
+     * Create application object.
      */
     public function __construct()
     {

@@ -8,50 +8,34 @@
 namespace GravityMedia\Commander;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
 use GravityMedia\Commander\Entity\TaskEntity;
 
 /**
- * Task manager class
+ * Task manager class.
  *
  * @package GravityMedia\Commander
  */
 class TaskManager
 {
     /**
+     * The entity manager.
+     *
      * @var EntityManagerInterface
      */
     protected $entityManager;
 
     /**
-     * @var SchemaTool
-     */
-    protected $schemaTool;
-
-    /**
-     * Create task manager object
+     * Create task manager object.
      *
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->schemaTool = new SchemaTool($entityManager);
     }
 
     /**
-     * Update schema
-     */
-    public function updateSchema()
-    {
-        $classes = $this->entityManager->getMetadataFactory()->getAllMetadata();
-        $this->schemaTool->updateSchema($classes);
-
-        return $this;
-    }
-
-    /**
-     * Get tasks
+     * Get all tasks.
      *
      * @return TaskEntity[]
      */
@@ -61,17 +45,34 @@ class TaskManager
     }
 
     /**
-     * Add task
+     * Get single task by criteria.
      *
-     * @param TaskEntity $entity
+     * @param array $criteria
      *
-     * @return $this
+     * @return null|TaskEntity
      */
-    public function addTask(TaskEntity $entity)
+    public function getTask(array $criteria)
     {
+        return $this->entityManager->getRepository(TaskEntity::class)->findOneBy($criteria);
+    }
+
+    /**
+     * Add task.
+     *
+     * @param string $script
+     * @param int    $priority
+     *
+     * @return TaskEntity
+     */
+    public function addTask($script, $priority = TaskEntity::DEFAULT_PRIORITY)
+    {
+        $entity = new TaskEntity();
+        $entity->setScript($script);
+        $entity->setPriority($priority);
+
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
-        return $this;
+        return $entity;
     }
 }

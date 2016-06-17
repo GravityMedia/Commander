@@ -5,10 +5,9 @@
  * @author Daniel Schröder <daniel.schroeder@gravitymedia.de>
  */
 
-namespace GravityMedia\Commander\Console;
+namespace GravityMedia\Commander\Loader;
 
-use GravityMedia\Commander\Console\Command;
-use GravityMedia\Commander\Console\Helper;
+use GravityMedia\Commander\Serializer\ConfigSerializer;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
@@ -16,20 +15,20 @@ use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
- * Application factory class.
+ * Commander config loader factory class
  *
- * @package GravityMedia\Commander\Console
+ * @package GravityMedia\Commander\Loader
  */
-class ApplicationFactory implements FactoryInterface
+class CommanderConfigLoaderFactory implements FactoryInterface
 {
     /**
-     * Create application object.
+     * Create commander config loader object
      *
      * @param  ContainerInterface $container
      * @param  string             $requestedName
      * @param  null|array         $options
      *
-     * @return Application
+     * @return CommanderConfigLoader
      *
      * @throws ServiceNotFoundException if unable to resolve the service.
      * @throws ServiceNotCreatedException if an exception is raised when creating a service.
@@ -37,13 +36,9 @@ class ApplicationFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $application = new Application();
-        $application->add($container->get(Command\AddCommand::class));
-        $application->add($container->get(Command\ShowCommand::class));
+        /** @var ConfigSerializer $configSerializer */
+        $configSerializer = $container->get(ConfigSerializer::class);
 
-        $helperSet = $application->getHelperSet();
-        $helperSet->set($container->get(Helper\CommanderConfigLoaderHelper::class));
-
-        return $application;
+        return new CommanderConfigLoader($configSerializer);
     }
 }

@@ -7,11 +7,11 @@
 
 namespace GravityMedia\Commander\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Target entity class
+ * Target entity class.
  *
  * @package GravityMedia\Commander\Doctrine\Entity
  *
@@ -21,7 +21,12 @@ use Doctrine\ORM\Mapping as ORM;
 class TaskEntity
 {
     /**
-     * The ID
+     * The default priority.
+     */
+    const DEFAULT_PRIORITY = 1;
+
+    /**
+     * The ID.
      *
      * @var string
      *
@@ -32,16 +37,25 @@ class TaskEntity
     private $id;
 
     /**
-     * The commandline
+     * The script.
      *
      * @var string
      *
      * @ORM\Column(type="string")
      **/
-    private $commandline;
+    private $script;
 
     /**
-     * The PID
+     * The priority.
+     *
+     * @var int
+     *
+     * @ORM\Column(type="integer")
+     */
+    private $priority;
+
+    /**
+     * The PID.
      *
      * @var int
      *
@@ -50,7 +64,16 @@ class TaskEntity
     private $pid;
 
     /**
-     * The created at timestamp
+     * The exit code.
+     *
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $exitCode;
+
+    /**
+     * The timestamp when the task was created.
      *
      * @var \DateTime $createdAt
      *
@@ -60,7 +83,25 @@ class TaskEntity
     private $createdAt;
 
     /**
-     * Get ID
+     * The timestamp when the task was updated.
+     *
+     * @var \DateTime $updatedAt
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+
+    /**
+     * Create task entity.
+     */
+    public function __construct()
+    {
+        $this->priority = static::DEFAULT_PRIORITY;
+    }
+
+    /**
+     * Get ID.
      *
      * @return string
      */
@@ -70,30 +111,53 @@ class TaskEntity
     }
 
     /**
-     * Get commandline
+     * Get script.
      *
      * @return string
      */
-    public function getCommandline()
+    public function getScript()
     {
-        return $this->commandline;
+        return $this->script;
     }
 
     /**
-     * Set commandline
+     * Set script.
      *
-     * @param string $commandline
+     * @param string $script
      *
      * @return $this
      */
-    public function setCommandline($commandline)
+    public function setScript($script)
     {
-        $this->commandline = $commandline;
+        $this->script = $script;
         return $this;
     }
 
     /**
-     * Get PID
+     * Get priority.
+     *
+     * @return int
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * Set priority.
+     *
+     * @param int $priority
+     *
+     * @return $this
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+        return $this;
+    }
+
+    /**
+     * Get PID.
      *
      * @return int
      */
@@ -103,7 +167,7 @@ class TaskEntity
     }
 
     /**
-     * Set PID
+     * Set PID.
      *
      * @param int $pid
      *
@@ -116,7 +180,30 @@ class TaskEntity
     }
 
     /**
-     * Get created at timestamp
+     * Get exit code.
+     *
+     * @return int
+     */
+    public function getExitCode()
+    {
+        return $this->exitCode;
+    }
+
+    /**
+     * Set exit code.
+     *
+     * @param int $exitCode
+     *
+     * @return $this
+     */
+    public function setExitCode($exitCode)
+    {
+        $this->exitCode = $exitCode;
+        return $this;
+    }
+
+    /**
+     * Get timestamp when the task was created.
      *
      * @return \DateTime
      */
@@ -126,7 +213,7 @@ class TaskEntity
     }
 
     /**
-     * Set created at timestamp
+     * Set timestamp when the task was created.
      *
      * @param \DateTime $createdAt
      *
@@ -135,6 +222,29 @@ class TaskEntity
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    /**
+     * Get timestamp when the task was updated.
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set timestamp when the task was updated.
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return $this
+     */
+    public function setUpdatedAt(\DateTime $updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 }

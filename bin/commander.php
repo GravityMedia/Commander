@@ -28,10 +28,11 @@ unset($dir);
 /**
  * Import classes
  */
-use GravityMedia\Commander\Console\Application;
-use GravityMedia\Commander\Console\ApplicationFactory;
+use GravityMedia\Commander\Console;
 use GravityMedia\Commander\Console\Command;
 use GravityMedia\Commander\Console\Helper;
+use GravityMedia\Commander\Loader;
+use GravityMedia\Commander\Serializer;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\ServiceManager\ServiceManager;
 
@@ -40,15 +41,16 @@ use Zend\ServiceManager\ServiceManager;
  */
 $serviceManager = new ServiceManager([
     'factories' => [
-        Application::class => ApplicationFactory::class,
+        Console\Application::class => Console\ApplicationFactory::class,
         Command\AddCommand::class => InvokableFactory::class,
         Command\ShowCommand::class => InvokableFactory::class,
-        Helper\ConfigSerializerHelper::class => InvokableFactory::class,
-        Helper\EntityManagerHelper::class => InvokableFactory::class
+        Helper\CommanderConfigLoaderHelper::class => Helper\CommanderConfigLoaderHelperFactory::class,
+        Loader\CommanderConfigLoader::class => Loader\CommanderConfigLoaderFactory::class,
+        Serializer\ConfigSerializer::class => Serializer\ConfigSerializerFactory::class
     ]
 ]);
 
 /**
  * Run application
  */
-exit($serviceManager->get(Application::class)->run());
+exit($serviceManager->get(Console\Application::class)->run());

@@ -7,15 +7,14 @@
 
 namespace GravityMedia\Commander\Console\Command;
 
-use Doctrine\ORM\EntityManagerInterface;
-use GravityMedia\Commander\Console\Helper\EntityManagerHelper;
+use GravityMedia\Commander\Commander;
 use GravityMedia\Commander\TaskManager;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Show command class
+ * Show command class.
  *
  * @package GravityMedia\Commander\Console\Command
  */
@@ -39,21 +38,32 @@ class ShowCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $config = $this->getCommanderConfig();
+        $commander = new Commander($config);
+        if (!$commander->isSchemaValid()) {
+            $commander->updateSchema();
+        }
 
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = $this->getHelper(EntityManagerHelper::class)->createEntityManager($config);
+        $entityManager = $commander->getEntityManager();
         $taskManager = new TaskManager($entityManager);
-        $taskManager->updateSchema();
+
+        $tasks = $taskManager->getTasks();
+        if (0 === count($tasks)) {
+            $output->writeln('No tasks found');
+            return;
+        }
 
         $table = new Table($output);
-        $table->setHeaders(['ID', 'Commandline', 'PID', 'Created At']);
+        $table->setHeaders(['ID', 'Script', 'Priority', 'PID', 'Exit Code', 'Created At', 'Updated At']);
 
-        foreach ($taskManager->getTasks() as $task) {
+        foreach ($tasks as $task) {
             $table->addRow([
                 $task->getId(),
-                $task->getCommandline(),
+                $task->getScript(),
+                $task->getPriority(),
                 $task->getPid(),
-                $task->getCreatedAt()->format('r')
+                $task->getExitCode(),
+                $task->getCreatedAt()->format('r'),
+                $task->getUpdatedAt()->format('r')
             ]);
         }
 
