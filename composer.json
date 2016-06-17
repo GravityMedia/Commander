@@ -14,17 +14,15 @@
         "ext-pdo_sqlite": "*",
         "doctrine/orm": "^2.5",
         "gedmo/doctrine-extensions": "^2.4",
-        "symfony/console": "^2.8",
-        "symfony/process": "^2.8",
-        "symfony/serializer": "^2.8",
+        "symfony/console": "^3.1",
+        "symfony/process": "^3.1",
+        "symfony/serializer": "^3.1",
         "zendframework/zend-servicemanager": "^3.1"
     },
     "require-dev": {
         "phing/phing": "^2.14",
         "phpunit/phpunit": "^5.3",
-        "sami/sami": "^3.2",
-        "scrutinizer/ocular": "^1.3",
-        "symfony/finder": "^2.8"
+        "scrutinizer/ocular": "^1.3"
     },
     "autoload": {
         "psr-4": {
@@ -44,8 +42,8 @@
     "archive": {
         "exclude": [
             "/.*",
-            "/*.php",
-            "/build.*",
+            "/box.json",
+            "/build.xml",
             "/composer.*",
             "/phpunit.*",
             "/tests"
