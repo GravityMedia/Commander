@@ -7,6 +7,7 @@
 
 namespace GravityMedia\Commander;
 
+use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use GravityMedia\Commander\Entity\TaskEntity;
 
@@ -25,6 +26,13 @@ class TaskManager
     protected $entityManager;
 
     /**
+     * The repository.
+     *
+     * @var ObjectRepository
+     */
+    protected $repository;
+
+    /**
      * Create task manager object.
      *
      * @param EntityManagerInterface $entityManager
@@ -32,6 +40,20 @@ class TaskManager
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * Get repository.
+     *
+     * @return ObjectRepository
+     */
+    public function getRepository()
+    {
+        if (null === $this->repository) {
+            $this->repository = $this->entityManager->getRepository(TaskEntity::class);
+        }
+
+        return $this->repository;
     }
 
     /**
@@ -45,7 +67,7 @@ class TaskManager
     {
         return array_map(function (TaskEntity $entity) {
             return new Task($this->entityManager, $entity);
-        }, $this->entityManager->getRepository(TaskEntity::class)->findBy($criteria));
+        }, $this->getRepository()->findBy($criteria));
     }
 
     /**
@@ -58,7 +80,7 @@ class TaskManager
     public function getTask(array $criteria)
     {
         /** @var TaskEntity $entity */
-        $entity = $this->entityManager->getRepository(TaskEntity::class)->findOneBy($criteria);
+        $entity = $this->getRepository()->findOneBy($criteria);
         if (null === $entity) {
             return null;
         }
