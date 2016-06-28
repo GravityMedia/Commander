@@ -39,15 +39,13 @@ class TaskManager
      *
      * @param array $criteria
      *
-     * @return TaskEntity[]
+     * @return Task[]
      */
     public function getTasks(array $criteria = [])
     {
-        if (0 === count($criteria)) {
-            return $this->entityManager->getRepository(TaskEntity::class)->findAll();
-        }
-
-        return $this->entityManager->getRepository(TaskEntity::class)->findBy($criteria);
+        return array_map(function (TaskEntity $entity) {
+            return new Task($this->entityManager, $entity);
+        }, $this->entityManager->getRepository(TaskEntity::class)->findBy($criteria));
     }
 
     /**
@@ -55,11 +53,17 @@ class TaskManager
      *
      * @param array $criteria
      *
-     * @return null|TaskEntity
+     * @return null|Task
      */
     public function getTask(array $criteria)
     {
-        return $this->entityManager->getRepository(TaskEntity::class)->findOneBy($criteria);
+        /** @var TaskEntity $entity */
+        $entity = $this->entityManager->getRepository(TaskEntity::class)->findOneBy($criteria);
+        if (null === $entity) {
+            return null;
+        }
+
+        return new Task($this->entityManager, $entity);
     }
 
     /**
@@ -68,7 +72,7 @@ class TaskManager
      * @param string $script
      * @param int    $priority
      *
-     * @return TaskEntity
+     * @return Task
      */
     public function addTask($script, $priority = TaskEntity::DEFAULT_PRIORITY)
     {
@@ -79,40 +83,6 @@ class TaskManager
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
-        return $entity;
-    }
-
-    /**
-     * Update PID.
-     *
-     * @param TaskEntity $entity
-     * @param int        $pid
-     *
-     * @return $this
-     */
-    public function updatePid(TaskEntity $entity, $pid)
-    {
-        $entity->setPid($pid);
-
-        $this->entityManager->flush();
-
-        return $this;
-    }
-
-    /**
-     * Update exit code.
-     *
-     * @param TaskEntity $entity
-     * @param int        $exitCode
-     *
-     * @return $this
-     */
-    public function updateExitCode(TaskEntity $entity, $exitCode)
-    {
-        $entity->setExitCode($exitCode);
-
-        $this->entityManager->flush();
-
-        return $this;
+        return new Task($this->entityManager, $entity);
     }
 }

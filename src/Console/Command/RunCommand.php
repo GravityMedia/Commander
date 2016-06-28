@@ -8,14 +8,8 @@
 namespace GravityMedia\Commander\Console\Command;
 
 use GravityMedia\Commander\Commander;
-use GravityMedia\Commander\Entity\TaskEntity;
 use GravityMedia\Commander\TaskManager;
-use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Helper\ProcessHelper;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
@@ -53,11 +47,11 @@ class RunCommand extends Command
         $taskManager = new TaskManager($entityManager);
 
         foreach ($taskManager->getTasks(['pid' => null]) as $task) {
-            $process = new Process($task->getScript());
+            $process = new Process($task->getEntity()->getScript());
             $process->setTimeout($config->getCommandTimeout());
             $process->start();
 
-            $taskManager->updatePid($task, $process->getPid());
+            $task->applyPid($process->getPid());
 
             $process->wait(function ($type, $buffer) use ($output) {
                 if (Process::ERR === $type) {
@@ -67,7 +61,7 @@ class RunCommand extends Command
                 $output->writeln($buffer);
             });
 
-            $taskManager->updateExitCode($task, $process->getExitCode());
+            $task->applyExitCode($process->getExitCode());
         }
     }
 }

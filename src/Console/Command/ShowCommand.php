@@ -57,13 +57,13 @@ class ShowCommand extends Command
 
         foreach ($tasks as $task) {
             $table->addRow([
-                $task->getId(),
-                $task->getScript(),
-                $task->getPriority(),
-                $task->getPid(),
-                $task->getExitCode(),
-                $task->getCreatedAt()->format('r'),
-                $task->getUpdatedAt()->format('r')
+                $task->getEntity()->getId(),
+                $task->getEntity()->getScript(),
+                $task->getEntity()->getPriority(),
+                $task->getEntity()->getPid(),
+                $task->getEntity()->getExitCode(),
+                $task->getEntity()->getCreatedAt()->format('r'),
+                $task->getEntity()->getUpdatedAt()->format('r')
             ]);
         }
 
