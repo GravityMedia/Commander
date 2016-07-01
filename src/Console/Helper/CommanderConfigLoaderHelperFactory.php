@@ -7,7 +7,7 @@
 
 namespace GravityMedia\Commander\Console\Helper;
 
-use GravityMedia\Commander\Loader\CommanderConfigLoader;
+use GravityMedia\Commander\Config\Loader\CommanderConfigLoader;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;

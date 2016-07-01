@@ -7,7 +7,7 @@
 
 namespace GravityMedia\Commander\Console\Helper;
 
-use GravityMedia\Commander\Loader\CommanderConfigLoader;
+use GravityMedia\Commander\Config\Loader\CommanderConfigLoader;
 use Symfony\Component\Console\Helper\Helper;
 
 /**
