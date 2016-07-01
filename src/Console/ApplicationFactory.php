@@ -38,7 +38,7 @@ class ApplicationFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $application = new Application();
-        $application->add($container->get(Command\AddCommand::class));
+        $application->add($container->get(Command\NewCommand::class));
         $application->add($container->get(Command\RunCommand::class));
         $application->add($container->get(Command\ShowCommand::class));
 

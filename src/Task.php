@@ -54,13 +54,28 @@ class Task
     }
 
     /**
-     * Apply PID.
+     * Update priority.
+     *
+     * @param int $priority
+     *
+     * @return $this
+     */
+    public function updatePriority($priority)
+    {
+        $this->entity->setPriority($priority);
+        $this->entityManager->flush();
+
+        return $this;
+    }
+
+    /**
+     * Update PID.
      *
      * @param int $pid
      *
      * @return $this
      */
-    public function applyPid($pid)
+    public function updatePid($pid)
     {
         $this->entity->setPid($pid);
         $this->entityManager->flush();
@@ -69,13 +84,13 @@ class Task
     }
 
     /**
-     * Apply exit code.
+     * Update exit code.
      *
      * @param int $exitCode
      *
      * @return $this
      */
-    public function applyExitCode($exitCode)
+    public function updateExitCode($exitCode)
     {
         $this->entity->setExitCode($exitCode);
         $this->entityManager->flush();

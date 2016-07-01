@@ -46,7 +46,7 @@ class ShowCommand extends Command
         $entityManager = $commander->getEntityManager();
         $taskManager = new TaskManager($entityManager);
 
-        $tasks = $taskManager->getTasks();
+        $tasks = $taskManager->findAllTasks();
         if (0 === count($tasks)) {
             $output->writeln('No tasks found');
             return;

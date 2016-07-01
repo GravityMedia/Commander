@@ -57,27 +57,46 @@ class TaskManager
     }
 
     /**
-     * Get all tasks.
+     * Find all tasks.
      *
-     * @param array $criteria
+     * @param array      $criteria
+     * @param null|array $orderBy
+     * @param null|int   $limit
      *
      * @return Task[]
      */
-    public function getTasks(array $criteria = [])
+    public function findAllTasks(array $criteria = [], array $orderBy = null, $limit = null)
     {
         return array_map(function (TaskEntity $entity) {
             return new Task($this->entityManager, $entity);
-        }, $this->getRepository()->findBy($criteria));
+        }, $this->getRepository()->findBy($criteria, $orderBy, $limit));
     }
 
     /**
-     * Get single task by criteria.
+     * Find next task.
      *
      * @param array $criteria
      *
      * @return null|Task
      */
-    public function getTask(array $criteria)
+    public function findNextTask(array $criteria = [])
+    {
+        $tasks = $this->findAllTasks($criteria, ['priority' => 'ASC', 'createdAt' => 'ASC', 'updatedAt' => 'ASC'], 1);
+        if (count($tasks) < 1) {
+            return null;
+        }
+
+        return $tasks[0];
+    }
+
+    /**
+     * Find single task by criteria.
+     *
+     * @param array $criteria
+     *
+     * @return null|Task
+     */
+    public function findTask(array $criteria)
     {
         /** @var TaskEntity $entity */
         $entity = $this->getRepository()->findOneBy($criteria);
@@ -89,14 +108,14 @@ class TaskManager
     }
 
     /**
-     * Add task.
+     * Create new task.
      *
      * @param string $script
      * @param int    $priority
      *
      * @return Task
      */
-    public function addTask($script, $priority = TaskEntity::DEFAULT_PRIORITY)
+    public function newTask($script, $priority = TaskEntity::DEFAULT_PRIORITY)
     {
         $entity = new TaskEntity();
         $entity->setScript($script);
