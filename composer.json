@@ -14,6 +14,7 @@
         "ext-pdo_sqlite": "*",
         "doctrine/orm": "^2.5",
         "gedmo/doctrine-extensions": "^2.4",
+        "monolog/monolog": "^1.19",
         "symfony/console": "^3.1",
         "symfony/process": "^3.1",
         "symfony/serializer": "^3.1",
