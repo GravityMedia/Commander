@@ -15,60 +15,71 @@ namespace GravityMedia\Commander\Config;
 class CommanderConfig
 {
     /**
-     * The memory database path.
+     * The default database file path.
+     *
+     * @const string
      */
-    const DEFAULT_DATABASE_PATH = 'commander.sqlite';
+    const DEFAULT_DATABASE_FILE_PATH = 'commander.sqlite';
 
     /**
      * The default timeout for command execution.
+     *
+     * @const string
      */
     const DEFAULT_COMMAND_TIMEOUT = 60;
 
     /**
-     * The database path.
+     * The database file path.
      *
-     * @var string
+     * @var null|string
      */
-    private $databasePath;
+    private $databaseFilePath;
 
     /**
      * The database cache directory.
      *
-     * @var string
+     * @var null|string
      */
     private $databaseCacheDirectory;
 
     /**
+     * The log file path.
+     *
+     * @var null|string
+     */
+    private $logFilePath;
+
+    /**
      * The command timeout.
      *
-     * @var int
+     * @var null|int
      */
     private $commandTimeout;
 
     /**
-     * Get database path.
+     * Get database file path.
      *
      * @return string
      */
-    public function getDatabasePath()
+    public function getDatabaseFilePath()
     {
-        if (null === $this->databasePath) {
-            return static::DEFAULT_DATABASE_PATH;
+        if (null === $this->databaseFilePath) {
+            return static::DEFAULT_DATABASE_FILE_PATH;
         }
 
-        return $this->databasePath;
+        return $this->databaseFilePath;
     }
 
     /**
-     * Set database path.
+     * Set database file path.
      *
-     * @param string $databasePath
+     * @param string $databaseFilePath
      *
      * @return $this
      */
-    public function setDatabasePath($databasePath)
+    public function setDatabaseFilePath($databaseFilePath)
     {
-        $this->databasePath = $databasePath;
+        $this->databaseFilePath = $databaseFilePath;
         return $this;
     }
 
@@ -92,6 +103,29 @@ class CommanderConfig
     public function setDatabaseCacheDirectory($databaseCacheDirectory)
     {
         $this->databaseCacheDirectory = $databaseCacheDirectory;
+        return $this;
+    }
+
+    /**
+     * Get log file path.
+     *
+     * @return null|string
+     */
+    public function getLogFilePath()
+    {
+        return $this->logFilePath;
+    }
+
+    /**
+     * Set log file path.
+     *
+     * @param string $logFilePath
+     *
+     * @return $this
+     */
+    public function setLogFilePath($logFilePath)
+    {
+        $this->logFilePath = $logFilePath;
         return $this;
     }
 
