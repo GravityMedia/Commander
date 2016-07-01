@@ -28,10 +28,10 @@ unset($dir);
 /**
  * Import classes
  */
+use GravityMedia\Commander\Config\Loader;
 use GravityMedia\Commander\Console;
 use GravityMedia\Commander\Console\Command;
 use GravityMedia\Commander\Console\Helper;
-use GravityMedia\Commander\Loader;
 use GravityMedia\Commander\Serializer;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\ServiceManager\ServiceManager;
@@ -42,7 +42,7 @@ use Zend\ServiceManager\ServiceManager;
 $serviceManager = new ServiceManager([
     'factories' => [
         Console\Application::class => Console\ApplicationFactory::class,
-        Command\AddCommand::class => InvokableFactory::class,
+        Command\NewCommand::class => InvokableFactory::class,
         Command\RunCommand::class => InvokableFactory::class,
         Command\ShowCommand::class => InvokableFactory::class,
         Helper\CommanderConfigLoaderHelper::class => Helper\CommanderConfigLoaderHelperFactory::class,
