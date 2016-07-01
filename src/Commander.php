@@ -25,6 +25,9 @@ use Doctrine\ORM\Tools\SchemaValidator;
 use Gedmo\DoctrineExtensions;
 use Gedmo\Timestampable\TimestampableListener;
 use GravityMedia\Commander\Config\CommanderConfig;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Commander class.
@@ -77,6 +80,13 @@ class Commander
      * @var SchemaTool
      */
     protected $schemaTool;
+
+    /**
+     * The logger.
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Create commander object.
@@ -168,7 +178,7 @@ class Commander
         if (null === $this->entityManager) {
             $connection = [
                 'driver' => 'pdo_sqlite',
-                'path' => $this->config->getDatabasePath()
+                'path' => $this->config->getDatabaseFilePath()
             ];
 
             $configuration = $this->getEntityManagerConfig();
@@ -218,6 +228,27 @@ class Commander
         }
 
         return $this->schemaTool;
+    }
+
+    /**
+     * Get logger.
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        if (null === $this->logger) {
+            $logger = new Logger('COMMANDER');
+
+            $path = $this->config->getLogFilePath();
+            if (null !== $path) {
+                $logger->pushHandler(new StreamHandler($path));
+            }
+
+            $this->logger = $logger;
+        }
+
+        return $this->logger;
     }
 
     /**
