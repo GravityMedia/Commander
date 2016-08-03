@@ -5,15 +5,15 @@
  * @author Daniel Schröder <daniel.schroeder@gravitymedia.de>
  */
 
-namespace GravityMedia\Commander;
+namespace GravityMedia\Commander\Commander;
 
 use Doctrine\ORM\EntityManagerInterface;
-use GravityMedia\Commander\Entity\TaskEntity;
+use GravityMedia\Commander\ORM\TaskEntity;
 
 /**
  * Task class.
  *
- * @package GravityMedia\Commander
+ * @package GravityMedia\Commander\Commander
  */
 class Task
 {
@@ -54,13 +54,13 @@ class Task
     }
 
     /**
-     * Update priority.
+     * Prioritize task.
      *
      * @param int $priority
      *
      * @return $this
      */
-    public function updatePriority($priority)
+    public function prioritize($priority)
     {
         $this->entity->setPriority($priority);
         $this->entityManager->flush();
@@ -69,13 +69,13 @@ class Task
     }
 
     /**
-     * Update PID.
+     * Begin task.
      *
      * @param int $pid
      *
      * @return $this
      */
-    public function updatePid($pid)
+    public function begin($pid)
     {
         $this->entity->setPid($pid);
         $this->entityManager->flush();
@@ -84,15 +84,28 @@ class Task
     }
 
     /**
-     * Update exit code.
+     * Finish task.
      *
      * @param int $exitCode
      *
      * @return $this
      */
-    public function updateExitCode($exitCode)
+    public function finish($exitCode)
     {
         $this->entity->setExitCode($exitCode);
+        $this->entityManager->flush();
+
+        return $this;
+    }
+
+    /**
+     * Remove task.
+     *
+     * @return $this
+     */
+    public function remove()
+    {
+        $this->entityManager->remove($this->entity);
         $this->entityManager->flush();
 
         return $this;

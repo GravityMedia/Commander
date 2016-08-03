@@ -5,18 +5,19 @@
  * @author Daniel Schröder <daniel.schroeder@gravitymedia.de>
  */
 
-namespace GravityMedia\Commander\Entity;
+namespace GravityMedia\Commander\ORM;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Target entity class.
+ * Task entity class.
  *
- * @package GravityMedia\Commander\Doctrine\Entity
+ * @package GravityMedia\Commander\ORM
  *
  * @ORM\Entity
  * @ORM\Table(name="task")
+ * @ORM\Entity(repositoryClass="GravityMedia\Commander\ORM\TaskEntityRepository")
  **/
 class TaskEntity
 {
@@ -37,15 +38,6 @@ class TaskEntity
     private $id;
 
     /**
-     * The script.
-     *
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     **/
-    private $script;
-
-    /**
      * The priority.
      *
      * @var int
@@ -53,6 +45,15 @@ class TaskEntity
      * @ORM\Column(type="integer")
      */
     private $priority;
+
+    /**
+     * The commandline.
+     *
+     * @var string
+     *
+     * @ORM\Column(type="string")
+     **/
+    private $commandline;
 
     /**
      * The PID.
@@ -93,14 +94,6 @@ class TaskEntity
     private $updatedAt;
 
     /**
-     * Create task entity.
-     */
-    public function __construct()
-    {
-        $this->priority = static::DEFAULT_PRIORITY;
-    }
-
-    /**
      * Get ID.
      *
      * @return string
@@ -108,29 +101,6 @@ class TaskEntity
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Get script.
-     *
-     * @return string
-     */
-    public function getScript()
-    {
-        return $this->script;
-    }
-
-    /**
-     * Set script.
-     *
-     * @param string $script
-     *
-     * @return $this
-     */
-    public function setScript($script)
-    {
-        $this->script = $script;
-        return $this;
     }
 
     /**
@@ -153,6 +123,29 @@ class TaskEntity
     public function setPriority($priority)
     {
         $this->priority = $priority;
+        return $this;
+    }
+
+    /**
+     * Get commandline.
+     *
+     * @return string
+     */
+    public function getCommandline()
+    {
+        return $this->commandline;
+    }
+
+    /**
+     * Set commandline.
+     *
+     * @param string $commandline
+     *
+     * @return $this
+     */
+    public function setCommandline($commandline)
+    {
+        $this->commandline = $commandline;
         return $this;
     }
 

@@ -7,8 +7,8 @@
 
 namespace GravityMedia\Commander\Console\Command;
 
-use GravityMedia\Commander\Commander;
-use GravityMedia\Commander\TaskManager;
+use GravityMedia\Commander\Commander\Task;
+use Monolog\Formatter\NormalizerFormatter;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,7 +29,7 @@ class ShowCommand extends Command
 
         $this
             ->setName('tasks:show')
-            ->setDescription('Show tasks');
+            ->setDescription('Show all tasks');
     }
 
     /**
@@ -37,33 +37,38 @@ class ShowCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = $this->getCommanderConfig();
-        $commander = new Commander($config);
-        if (!$commander->isSchemaValid()) {
-            $commander->updateSchema();
-        }
+        $tasks = $this->getCommander()->getTaskManager()->findAllTasks();
 
-        $entityManager = $commander->getEntityManager();
-        $taskManager = new TaskManager($entityManager);
-
-        $tasks = $taskManager->findAllTasks();
         if (0 === count($tasks)) {
             $output->writeln('No tasks found');
             return;
         }
 
+        $this->renderTable($tasks, $output);
+    }
+
+    /**
+     * Render table.
+     *
+     * @param Task[]          $tasks
+     * @param OutputInterface $output
+     *
+     * @return void
+     */
+    protected function renderTable(array $tasks, OutputInterface $output)
+    {
         $table = new Table($output);
-        $table->setHeaders(['ID', 'Script', 'Priority', 'PID', 'Exit Code', 'Created At', 'Updated At']);
+        $table->setHeaders(['ID', 'Priority', 'Commandline', 'PID', 'Exit Code', 'Created At', 'Updated At']);
 
         foreach ($tasks as $task) {
             $table->addRow([
                 $task->getEntity()->getId(),
-                $task->getEntity()->getScript(),
                 $task->getEntity()->getPriority(),
+                $task->getEntity()->getCommandline(),
                 $task->getEntity()->getPid(),
                 $task->getEntity()->getExitCode(),
-                $task->getEntity()->getCreatedAt()->format('r'),
-                $task->getEntity()->getUpdatedAt()->format('r')
+                $task->getEntity()->getCreatedAt()->format(NormalizerFormatter::SIMPLE_DATE),
+                $task->getEntity()->getUpdatedAt()->format(NormalizerFormatter::SIMPLE_DATE)
             ]);
         }
 

@@ -7,10 +7,6 @@
 
 namespace GravityMedia\Commander\Console\Command;
 
-use GravityMedia\Commander\Commander;
-use GravityMedia\Commander\Entity\TaskEntity;
-use GravityMedia\Commander\TaskManager;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -32,31 +28,18 @@ class NewCommand extends Command
 
         $this
             ->setName('task:new')
-            ->setDescription('New task')
+            ->setDescription('Create a new task')
             ->addArgument(
-                'script',
+                'commandline',
                 InputArgument::REQUIRED,
-                'The script to run with the task'
+                'The commandline to run with the task'
             )
             ->addOption(
                 'priority',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'The task priority',
-                TaskEntity::DEFAULT_PRIORITY
+                'The task priority'
             );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        parent::initialize($input, $output);
-
-        if (null === $this->filterPriority($input)) {
-            throw new RuntimeException('Value of option "priority" must be an integer');
-        }
     }
 
     /**
@@ -64,43 +47,25 @@ class NewCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = $this->getCommanderConfig();
-        $commander = new Commander($config);
-        if (!$commander->isSchemaValid()) {
-            $commander->updateSchema();
-        }
+        $taskManager = $this->getCommander()->getTaskManager();
 
-        $entityManager = $commander->getEntityManager();
-        $taskManager = new TaskManager($entityManager);
+        $commandline = $input->getArgument('commandline');
+        $task = $taskManager->findNextTask(['commandline' => $commandline]);
 
-        $script = $input->getArgument('script');
-        $task = $taskManager->findTask(['script' => $script, 'pid' => null]);
+        $priority = filter_var($input->getOption('priority'), FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
-        $priority = $this->filterPriority($input);
         if (null === $task) {
-            $taskManager->newTask($script, $priority);
+            $task = $taskManager->newTask($commandline, $priority);
+            $output->writeln(sprintf('Created new task %s', $task->getEntity()->getId()));
             return;
         }
 
         if ($priority !== $task->getEntity()->getPriority()) {
-            $task->updatePriority($priority);
-        }
-    }
-
-    /**
-     * Filter priority value.
-     *
-     * @param InputInterface $input
-     *
-     * @return null|int
-     */
-    protected function filterPriority(InputInterface $input)
-    {
-        $priority = filter_var($input->getOption('priority'), FILTER_VALIDATE_INT);
-        if (false === $priority) {
-            return null;
+            $task->prioritize($priority);
+            $output->writeln(sprintf('Updated task priority of %s', $task->getEntity()->getId()));
+            return;
         }
 
-        return $priority;
+        $output->writeln(sprintf('Task %s already present, ignoring', $task->getEntity()->getId()));
     }
 }

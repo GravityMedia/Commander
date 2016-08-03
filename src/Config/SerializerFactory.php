@@ -5,7 +5,7 @@
  * @author Daniel Schröder <daniel.schroeder@gravitymedia.de>
  */
 
-namespace GravityMedia\Commander\Serializer;
+namespace GravityMedia\Commander\Config;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
@@ -20,7 +20,7 @@ use Zend\ServiceManager\Factory\FactoryInterface;
  *
  * @package GravityMedia\Commander\Serializer
  */
-class ConfigSerializerFactory implements FactoryInterface
+class SerializerFactory implements FactoryInterface
 {
     /**
      * Create config serializer object.
@@ -29,7 +29,7 @@ class ConfigSerializerFactory implements FactoryInterface
      * @param  string             $requestedName
      * @param  null|array         $options
      *
-     * @return ConfigSerializer
+     * @return Serializer
      *
      * @throws ServiceNotFoundException if unable to resolve the service.
      * @throws ServiceNotCreatedException if an exception is raised when creating a service.
@@ -40,6 +40,6 @@ class ConfigSerializerFactory implements FactoryInterface
         $normalizers = [new GetSetMethodNormalizer()];
         $encoders = [new JsonEncoder()];
 
-        return new ConfigSerializer($normalizers, $encoders);
+        return new Serializer($normalizers, $encoders);
     }
 }

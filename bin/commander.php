@@ -28,11 +28,8 @@ unset($dir);
 /**
  * Import classes
  */
-use GravityMedia\Commander\Config\Loader;
+use GravityMedia\Commander\Config;
 use GravityMedia\Commander\Console;
-use GravityMedia\Commander\Console\Command;
-use GravityMedia\Commander\Console\Helper;
-use GravityMedia\Commander\Serializer;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\ServiceManager\ServiceManager;
 
@@ -41,13 +38,14 @@ use Zend\ServiceManager\ServiceManager;
  */
 $serviceManager = new ServiceManager([
     'factories' => [
+        Config\Loader::class => Config\LoaderFactory::class,
+        Config\Serializer::class => Config\SerializerFactory::class,
         Console\Application::class => Console\ApplicationFactory::class,
-        Command\NewCommand::class => InvokableFactory::class,
-        Command\RunCommand::class => InvokableFactory::class,
-        Command\ShowCommand::class => InvokableFactory::class,
-        Helper\CommanderConfigLoaderHelper::class => Helper\CommanderConfigLoaderHelperFactory::class,
-        Loader\CommanderConfigLoader::class => Loader\CommanderConfigLoaderFactory::class,
-        Serializer\ConfigSerializer::class => Serializer\ConfigSerializerFactory::class
+        Console\Command\NewCommand::class => InvokableFactory::class,
+        Console\Command\PruneCommand::class => InvokableFactory::class,
+        Console\Command\RunCommand::class => InvokableFactory::class,
+        Console\Command\ShowCommand::class => InvokableFactory::class,
+        Console\Helper\ConfigLoaderHelper::class => Console\Helper\ConfigLoaderHelperFactory::class,
     ]
 ]);
 

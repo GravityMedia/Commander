@@ -5,16 +5,16 @@
  * @author Daniel Schröder <daniel.schroeder@gravitymedia.de>
  */
 
-namespace GravityMedia\Commander;
+namespace GravityMedia\Commander\Commander;
 
-use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use GravityMedia\Commander\Entity\TaskEntity;
+use GravityMedia\Commander\ORM\TaskEntity;
+use GravityMedia\Commander\ORM\TaskEntityRepository;
 
 /**
  * Task manager class.
  *
- * @package GravityMedia\Commander
+ * @package GravityMedia\Commander\Commander
  */
 class TaskManager
 {
@@ -28,7 +28,7 @@ class TaskManager
     /**
      * The repository.
      *
-     * @var ObjectRepository
+     * @var TaskEntityRepository
      */
     protected $repository;
 
@@ -45,7 +45,7 @@ class TaskManager
     /**
      * Get repository.
      *
-     * @return ObjectRepository
+     * @return TaskEntityRepository
      */
     public function getRepository()
     {
@@ -57,19 +57,37 @@ class TaskManager
     }
 
     /**
-     * Find all tasks.
+     * Map entities.
      *
-     * @param array      $criteria
-     * @param null|array $orderBy
-     * @param null|int   $limit
+     * @param TaskEntity[] $entities
      *
      * @return Task[]
      */
-    public function findAllTasks(array $criteria = [], array $orderBy = null, $limit = null)
+    protected function mapEntities(array $entities)
     {
         return array_map(function (TaskEntity $entity) {
             return new Task($this->entityManager, $entity);
-        }, $this->getRepository()->findBy($criteria, $orderBy, $limit));
+        }, $entities);
+    }
+
+    /**
+     * Find all tasks.
+     *
+     * @return Task[]
+     */
+    public function findAllTasks()
+    {
+        return $this->mapEntities($this->getRepository()->findAll());
+    }
+
+    /**
+     * Find all terminated tasks.
+     *
+     * @return Task[]
+     */
+    public function findAllTerminatedTasks()
+    {
+        return $this->mapEntities($this->getRepository()->findAllTerminated());
     }
 
     /**
@@ -77,29 +95,11 @@ class TaskManager
      *
      * @param array $criteria
      *
-     * @return null|Task
+     * @return Task|null
      */
     public function findNextTask(array $criteria = [])
     {
-        $tasks = $this->findAllTasks($criteria, ['priority' => 'ASC', 'createdAt' => 'ASC', 'updatedAt' => 'ASC'], 1);
-        if (count($tasks) < 1) {
-            return null;
-        }
-
-        return $tasks[0];
-    }
-
-    /**
-     * Find single task by criteria.
-     *
-     * @param array $criteria
-     *
-     * @return null|Task
-     */
-    public function findTask(array $criteria)
-    {
-        /** @var TaskEntity $entity */
-        $entity = $this->getRepository()->findOneBy($criteria);
+        $entity = $this->getRepository()->findNext($criteria);
         if (null === $entity) {
             return null;
         }
@@ -108,17 +108,21 @@ class TaskManager
     }
 
     /**
-     * Create new task.
+     * Create and persist new task.
      *
-     * @param string $script
-     * @param int    $priority
+     * @param string   $commandline
+     * @param int|null $priority
      *
      * @return Task
      */
-    public function newTask($script, $priority = TaskEntity::DEFAULT_PRIORITY)
+    public function newTask($commandline, $priority = null)
     {
+        if (null === $priority) {
+            $priority = TaskEntity::DEFAULT_PRIORITY;
+        }
+
         $entity = new TaskEntity();
-        $entity->setScript($script);
+        $entity->setCommandline($commandline);
         $entity->setPriority($priority);
 
         $this->entityManager->persist($entity);

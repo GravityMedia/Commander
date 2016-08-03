@@ -5,14 +5,14 @@
  * @author Daniel Schröder <daniel.schroeder@gravitymedia.de>
  */
 
-namespace GravityMedia\Commander\Config;
+namespace GravityMedia\Commander;
 
 /**
  * Commander config class.
  *
- * @package GravityMedia\Commander\Config
+ * @package GravityMedia\Commander
  */
-class CommanderConfig
+class Config
 {
     /**
      * The default database file path.
@@ -22,39 +22,39 @@ class CommanderConfig
     const DEFAULT_DATABASE_FILE_PATH = 'commander.sqlite';
 
     /**
-     * The default timeout for command execution.
+     * The default timeout for process execution.
      *
      * @const string
      */
-    const DEFAULT_COMMAND_TIMEOUT = 60;
+    const DEFAULT_PROCESS_TIMEOUT = 60;
 
     /**
      * The database file path.
      *
-     * @var null|string
+     * @var string|null
      */
     private $databaseFilePath;
 
     /**
      * The database cache directory.
      *
-     * @var null|string
+     * @var string|null
      */
     private $databaseCacheDirectory;
 
     /**
      * The log file path.
      *
-     * @var null|string
+     * @var string|null
      */
     private $logFilePath;
 
     /**
-     * The command timeout.
+     * The process timeout.
      *
-     * @var null|int
+     * @var int|null
      */
-    private $commandTimeout;
+    private $processTimeout;
 
     /**
      * Get database file path.
@@ -86,7 +86,7 @@ class CommanderConfig
     /**
      * Get database cache directory.
      *
-     * @return null|string
+     * @return string|null
      */
     public function getDatabaseCacheDirectory()
     {
@@ -109,7 +109,7 @@ class CommanderConfig
     /**
      * Get log file path.
      *
-     * @return null|string
+     * @return string|null
      */
     public function getLogFilePath()
     {
@@ -130,29 +130,29 @@ class CommanderConfig
     }
 
     /**
-     * Get command timeout.
+     * Get process timeout.
      *
      * @return int
      */
-    public function getCommandTimeout()
+    public function getProcessTimeout()
     {
-        if (null === $this->commandTimeout) {
-            return static::DEFAULT_COMMAND_TIMEOUT;
+        if (null === $this->processTimeout) {
+            return static::DEFAULT_PROCESS_TIMEOUT;
         }
 
-        return $this->commandTimeout;
+        return $this->processTimeout;
     }
 
     /**
-     * Set command timeout.
+     * Set process timeout.
      *
-     * @param int $commandTimeout
+     * @param int $processTimeout
      *
      * @return $this
      */
-    public function setCommandTimeout($commandTimeout)
+    public function setProcessTimeout($processTimeout)
     {
-        $this->commandTimeout = $commandTimeout;
+        $this->processTimeout = $processTimeout;
         return $this;
     }
 }

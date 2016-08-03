@@ -10,7 +10,7 @@ namespace Gravitymedia\CommanderTest\Console;
 use GravityMedia\Commander\Console\Application;
 
 /**
- * Application test class
+ * Application test class.
  *
  * @package GravityMedia\CommanderTest\Console
  *
@@ -19,7 +19,7 @@ use GravityMedia\Commander\Console\Application;
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Test that the application has the correct name and version
+     * Test that the application has the correct name and version.
      */
     public function testApplicationNameAndVersion()
     {

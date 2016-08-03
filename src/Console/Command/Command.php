@@ -7,8 +7,9 @@
 
 namespace GravityMedia\Commander\Console\Command;
 
-use GravityMedia\Commander\Config\CommanderConfig;
-use GravityMedia\Commander\Console\Helper\CommanderConfigLoaderHelper;
+use GravityMedia\Commander\Commander;
+use GravityMedia\Commander\Config;
+use GravityMedia\Commander\Console\Helper\ConfigLoaderHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,11 +22,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Command extends \Symfony\Component\Console\Command\Command
 {
     /**
-     * The commander config.
+     * The commander configuration.
      *
-     * @var CommanderConfig
+     * @var Config
      */
-    private $commanderConfig;
+    private $configuration;
+
+    /**
+     * The commander.
+     *
+     * @var Commander
+     */
+    private $commander;
 
     /**
      * {@inheritdoc}
@@ -36,7 +44,7 @@ class Command extends \Symfony\Component\Console\Command\Command
             'configuration',
             'c',
             InputOption::VALUE_OPTIONAL,
-            'The commander config',
+            'The commander configuration',
             'commander.json'
         );
     }
@@ -47,30 +55,52 @@ class Command extends \Symfony\Component\Console\Command\Command
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $filename = $input->getOption('configuration');
+
         if (!file_exists($filename)) {
-            $this->commanderConfig = new CommanderConfig();
+            $this->configuration = new Config();
             return;
         }
 
-        /** @var CommanderConfigLoaderHelper $helper */
-        $helper = $this->getHelper(CommanderConfigLoaderHelper::class);
-        $loader = $helper->getCommanderConfigLoader();
-        $this->commanderConfig = $loader->load($filename);
+        /** @var ConfigLoaderHelper $helper */
+        $helper = $this->getHelper(ConfigLoaderHelper::class);
+        $this->configuration = $helper->getLoader()->load($filename);
     }
 
     /**
-     * Get commander config.
+     * Get commander configuration.
      *
-     * @return CommanderConfig
+     * @return Config
      *
      * @throws \LogicException
      */
-    public function getCommanderConfig()
+    public function getConfiguration()
     {
-        if (null === $this->commanderConfig) {
-            throw new \LogicException('The commander config is available after initialization');
+        if (null === $this->configuration) {
+            throw new \LogicException('The commander configuration is available after initialization');
         }
 
-        return $this->commanderConfig;
+        return $this->configuration;
+    }
+
+    /**
+     * Get operational commander.
+     *
+     * @return Commander
+     *
+     * @throws \LogicException
+     */
+    public function getCommander()
+    {
+        if (null === $this->commander) {
+            $this->commander = new Commander($this->getConfiguration());
+            if ($this->commander->getSchemaValidator()->schemaInSyncWithMetadata()) {
+                return $this->commander;
+            }
+
+            $classes = $this->commander->getEntityManager()->getMetadataFactory()->getAllMetadata();
+            $this->commander->getSchemaTool()->updateSchema($classes);
+        }
+
+        return $this->commander;
     }
 }

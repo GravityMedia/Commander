@@ -5,9 +5,8 @@
  * @author Daniel Schröder <daniel.schroeder@gravitymedia.de>
  */
 
-namespace GravityMedia\Commander\Console\Helper;
+namespace GravityMedia\Commander\Config;
 
-use GravityMedia\Commander\Config\Loader\CommanderConfigLoader;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
@@ -15,20 +14,20 @@ use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
- * Commander config loader helper factory class
+ * Config loader factory class.
  *
- * @package GravityMedia\Commander\Serializer
+ * @package GravityMedia\Commander\Config
  */
-class CommanderConfigLoaderHelperFactory implements FactoryInterface
+class LoaderFactory implements FactoryInterface
 {
     /**
-     * Create commander config loader helper object
+     * Create config loader object.
      *
      * @param  ContainerInterface $container
      * @param  string             $requestedName
      * @param  null|array         $options
      *
-     * @return CommanderConfigLoaderHelper
+     * @return Loader
      *
      * @throws ServiceNotFoundException if unable to resolve the service.
      * @throws ServiceNotCreatedException if an exception is raised when creating a service.
@@ -36,9 +35,9 @@ class CommanderConfigLoaderHelperFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        /** @var CommanderConfigLoader $commanderConfigLoader */
-        $commanderConfigLoader = $container->get(CommanderConfigLoader::class);
+        /** @var Serializer $configSerializer */
+        $configSerializer = $container->get(Serializer::class);
 
-        return new CommanderConfigLoaderHelper($commanderConfigLoader);
+        return new Loader($configSerializer);
     }
 }

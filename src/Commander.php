@@ -24,7 +24,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
 use Gedmo\DoctrineExtensions;
 use Gedmo\Timestampable\TimestampableListener;
-use GravityMedia\Commander\Config\CommanderConfig;
+use GravityMedia\Commander\Commander\TaskManager;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -39,12 +39,19 @@ class Commander
     /**
      * The entity namespace.
      */
-    const ENTITY_NAMESPACE = 'GravityMedia\Commander\Entity';
+    const ENTITY_NAMESPACE = 'GravityMedia\Commander\ORM';
 
     /**
-     * @var CommanderConfig
+     * @var Config
      */
     protected $config;
+
+    /**
+     * The cache.
+     *
+     * @var Cache
+     */
+    protected $cache;
 
     /**
      * The mapping driver.
@@ -89,28 +96,41 @@ class Commander
     protected $logger;
 
     /**
+     * The task manager.
+     *
+     * @var TaskManager
+     */
+    protected $taskManager;
+
+    /**
      * Create commander object.
      *
-     * @param CommanderConfig $config
+     * @param Config $config
      */
-    public function __construct(CommanderConfig $config)
+    public function __construct(Config $config)
     {
         $this->config = $config;
     }
 
     /**
-     * Create cache object.
+     * Get cache.
      *
      * @return Cache
      */
-    protected function createCache()
+    public function getCache()
     {
-        $directory = $this->config->getDatabaseCacheDirectory();
-        if (null === $directory) {
-            return new ArrayCache();
+        if (null === $this->cache) {
+            $directory = $this->config->getDatabaseCacheDirectory();
+            if (null === $directory) {
+                $this->cache = new ArrayCache();
+
+                return $this->cache;
+            }
+
+            $this->cache = new FilesystemCache($directory);
         }
 
-        return new FilesystemCache($directory);
+        return $this->cache;
     }
 
     /**
@@ -126,11 +146,11 @@ class Commander
             );
 
             $driverChain = new MappingDriverChain();
-            $reader = new CachedReader(new AnnotationReader(), $this->createCache());
+            $reader = new CachedReader(new AnnotationReader(), $this->getCache());
 
             DoctrineExtensions::registerAbstractMappingIntoDriverChainORM($driverChain, $reader);
 
-            $annotationDriver = new AnnotationDriver($reader, [__DIR__ . '/Entity']);
+            $annotationDriver = new AnnotationDriver($reader, [__DIR__ . '/ORM']);
             $driverChain->addDriver($annotationDriver, static::ENTITY_NAMESPACE);
 
             $this->mappingDriver = $driverChain;
@@ -157,10 +177,10 @@ class Commander
             $config->setProxyDir($proxyDirectory);
             $config->setProxyNamespace(static::ENTITY_NAMESPACE);
             $config->setMetadataDriverImpl($this->getMappingDriver());
-            $config->setMetadataCacheImpl($this->createCache());
-            $config->setQueryCacheImpl($this->createCache());
-            $config->setResultCacheImpl($this->createCache());
-            $config->setHydrationCacheImpl($this->createCache());
+            $config->setMetadataCacheImpl($this->getCache());
+            $config->setQueryCacheImpl($this->getCache());
+            $config->setResultCacheImpl($this->getCache());
+            $config->setHydrationCacheImpl($this->getCache());
 
             $this->entityManagerConfig = $config;
         }
@@ -181,8 +201,8 @@ class Commander
                 'path' => $this->config->getDatabaseFilePath()
             ];
 
-            $configuration = $this->getEntityManagerConfig();
-            $metadataDriver = $configuration->getMetadataDriverImpl();
+            $config = $this->getEntityManagerConfig();
+            $metadataDriver = $config->getMetadataDriverImpl();
 
             $timestampableListener = new TimestampableListener();
             if ($metadataDriver instanceof AnnotationDriver) {
@@ -192,7 +212,7 @@ class Commander
             $eventManager = new EventManager();
             $eventManager->addEventSubscriber($timestampableListener);
 
-            $this->entityManager = EntityManager::create($connection, $configuration, $eventManager);
+            $this->entityManager = EntityManager::create($connection, $config, $eventManager);
         }
 
         return $this->entityManager;
@@ -252,25 +272,18 @@ class Commander
     }
 
     /**
-     * Return whether or not the schema is valid.
+     * Get task manager.
      *
-     * @return bool
+     * @return TaskManager
      */
-    public function isSchemaValid()
+    public function getTaskManager()
     {
-        return $this->getSchemaValidator()->schemaInSyncWithMetadata();
-    }
+        if (null === $this->taskManager) {
+            $entityManager = $this->getEntityManager();
 
-    /**
-     * Update schema.
-     *
-     * @return $this
-     */
-    public function updateSchema()
-    {
-        $classes = $this->getEntityManager()->getMetadataFactory()->getAllMetadata();
-        $this->getSchemaTool()->updateSchema($classes);
+            $this->taskManager = new TaskManager($entityManager);
+        }
 
-        return $this;
+        return $this->taskManager;
     }
 }

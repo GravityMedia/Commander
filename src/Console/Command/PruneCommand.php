@@ -7,16 +7,15 @@
 
 namespace GravityMedia\Commander\Console\Command;
 
-use GravityMedia\Commander\Commander\TaskRunner;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Run command class.
+ * Prune command class.
  *
  * @package GravityMedia\Commander\Console\Command
  */
-class RunCommand extends Command
+class PruneCommand extends Command
 {
     /**
      * {@inheritdoc}
@@ -26,8 +25,8 @@ class RunCommand extends Command
         parent::configure();
 
         $this
-            ->setName('tasks:run')
-            ->setDescription('Run all tasks');
+            ->setName('tasks:prune')
+            ->setDescription('Prune tasks');
     }
 
     /**
@@ -35,13 +34,19 @@ class RunCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = $this->getConfiguration();
-        $commander = $this->getCommander();
+        $taskManager = $this->getCommander()->getTaskManager();
 
-        $taskManager = $commander->getTaskManager();
-        $logger = $commander->getLogger();
+        $tasks = $taskManager->findAllTerminatedTasks();
 
-        $taskRunner = new TaskRunner($taskManager, $output, $logger);
-        $taskRunner->runAll($config->getProcessTimeout());
+        if (0 === count($tasks)) {
+            $output->writeln('No tasks found');
+            return;
+        }
+
+        foreach ($tasks as $task) {
+            $task->remove();
+        }
+
+        $output->writeln(sprintf('Removed %s terminated task(s)', count($tasks)));
     }
 }

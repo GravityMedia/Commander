@@ -5,15 +5,13 @@
  * @author Daniel Schröder <daniel.schroeder@gravitymedia.de>
  */
 
-namespace GravityMedia\Commander\Serializer;
-
-use Symfony\Component\Serializer\Serializer;
+namespace GravityMedia\Commander\Config;
 
 /**
  * Config serializer class.
  *
  * @package GravityMedia\Commander\Serializer
  */
-class ConfigSerializer extends Serializer
+class Serializer extends \Symfony\Component\Serializer\Serializer
 {
 }
