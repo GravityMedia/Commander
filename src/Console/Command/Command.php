@@ -76,7 +76,7 @@ class Command extends \Symfony\Component\Console\Command\Command
     public function getConfiguration()
     {
         if (null === $this->configuration) {
-            throw new \LogicException('The commander configuration is available after initialization');
+            throw new \LogicException('The commander configuration is not available before initialization');
         }
 
         return $this->configuration;

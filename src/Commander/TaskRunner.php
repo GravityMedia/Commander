@@ -131,7 +131,7 @@ class TaskRunner
      */
     public function run($task, $timeout)
     {
-        $process = $this->createProcess($task->getEntity()->getCommandline());
+        $process = new Process($task->getEntity()->getCommandline());
         $process->setTimeout($timeout);
         $process->start();
 
@@ -140,17 +140,5 @@ class TaskRunner
         $process->wait($this);
 
         $task->finish($process->getExitCode());
-    }
-
-    /**
-     * Create process.
-     *
-     * @param string $commandline
-     *
-     * @return Process
-     */
-    protected function createProcess($commandline)
-    {
-        return new Process($commandline);
     }
 }

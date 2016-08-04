@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Commander" default="test">
-    <property name="box.binary" value="~/.composer/vendor/bin/box"/>
+    <property name="box.binary" value="box"/>
     <property name="phpunit.binary" value="vendor/bin/phpunit"/>
-    <property name="sami.binary" value="vendor/bin/sami.php"/>
-    <property name="sami.config" value="sami-config.php"/>
 
-    <target name="test" description="Testing">
+    <target name="test" description="Run Test Suite">
         <exec
             executable="${phpunit.binary}"
             passthru="true"
@@ -16,19 +14,7 @@
         </exec>
     </target>
 
-    <target name="doc" description="Generating documentation">
-        <mkdir dir="build"/>
-        <exec
-            executable="${sami.binary}"
-            passthru="true"
-            checkreturn="true">
-            <arg value="update"/>
-            <arg value="--verbose"/>
-            <arg value="${sami.config}"/>
-        </exec>
-    </target>
-
-    <target name="build" description="Build application">
+    <target name="build" description="Build Application">
         <mkdir dir="build"/>
         <exec
             executable="${box.binary}"

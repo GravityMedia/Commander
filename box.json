@@ -1,6 +1,7 @@
 {
     "chmod": "0755",
     "directories": [
+        "config",
         "src"
     ],
     "files": [
@@ -10,6 +11,10 @@
         {
             "name": "*.php",
             "exclude": [
+                "benchmarks",
+                "bin",
+                "example",
+                "tests",
                 "Tests"
             ],
             "in": "vendor"

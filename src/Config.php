@@ -80,6 +80,7 @@ class Config
     public function setDatabaseFilePath($databaseFilePath)
     {
         $this->databaseFilePath = $databaseFilePath;
+
         return $this;
     }
 
@@ -103,6 +104,7 @@ class Config
     public function setCacheDirectory($cacheDirectory)
     {
         $this->cacheDirectory = $cacheDirectory;
+
         return $this;
     }
 
@@ -126,6 +128,7 @@ class Config
     public function setLogFilePath($logFilePath)
     {
         $this->logFilePath = $logFilePath;
+
         return $this;
     }
 
@@ -153,6 +156,7 @@ class Config
     public function setProcessTimeout($processTimeout)
     {
         $this->processTimeout = $processTimeout;
+
         return $this;
     }
 }

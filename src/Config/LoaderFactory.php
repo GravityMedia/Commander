@@ -35,9 +35,9 @@ class LoaderFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        /** @var Serializer $configSerializer */
-        $configSerializer = $container->get(Serializer::class);
+        /** @var Serializer $serializer */
+        $serializer = $container->get(Serializer::class);
 
-        return new Loader($configSerializer);
+        return new Loader($serializer);
     }
 }

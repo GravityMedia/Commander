@@ -16,40 +16,26 @@ if (!ini_get('date.timezone')) {
 /**
  * Initialize autoloader
  */
-foreach (array(__DIR__ . '/../..', __DIR__ . '/../vendor') as $dir) {
-    if (file_exists($dir . '/autoload.php')) {
-        require $dir . '/autoload.php';
+foreach ([__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../autoload.php'] as $file) {
+    if (file_exists($file)) {
+        require $file;
         break;
     }
 }
 
-unset($dir);
+/**
+ * Unset global autoload file variable
+ */
+unset($file);
 
 /**
- * Import classes
+ * Initialize container
+ *
+ * @var \Interop\Container\ContainerInterface $container
  */
-use GravityMedia\Commander\Config;
-use GravityMedia\Commander\Console;
-use Zend\ServiceManager\Factory\InvokableFactory;
-use Zend\ServiceManager\ServiceManager;
-
-/**
- * Create service manager
- */
-$serviceManager = new ServiceManager([
-    'factories' => [
-        Config\Loader::class => Config\LoaderFactory::class,
-        Config\Serializer::class => Config\SerializerFactory::class,
-        Console\Application::class => Console\ApplicationFactory::class,
-        Console\Command\NewCommand::class => InvokableFactory::class,
-        Console\Command\PruneCommand::class => InvokableFactory::class,
-        Console\Command\RunCommand::class => InvokableFactory::class,
-        Console\Command\ShowCommand::class => InvokableFactory::class,
-        Console\Helper\ConfigLoaderHelper::class => Console\Helper\ConfigLoaderHelperFactory::class,
-    ]
-]);
+$container = require __DIR__ . '/../config/container.config.php';
 
 /**
  * Run application
  */
-exit($serviceManager->get(Console\Application::class)->run());
+exit($container->get(\GravityMedia\Commander\Console\Application::class)->run());

@@ -8,6 +8,7 @@
 namespace GravityMedia\Commander\Config;
 
 use GravityMedia\Commander\Config;
+use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 
 /**
  * Config loader class.
@@ -17,20 +18,20 @@ use GravityMedia\Commander\Config;
 class Loader
 {
     /**
-     * The config serializer.
+     * The serializer.
      *
      * @var Serializer
      */
-    protected $configSerializer;
+    protected $serializer;
 
     /**
      * Create config loader object.
      *
-     * @param Serializer $configSerializer
+     * @param Serializer $serializer
      */
-    public function __construct(Serializer $configSerializer)
+    public function __construct(Serializer $serializer)
     {
-        $this->configSerializer = $configSerializer;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -39,11 +40,19 @@ class Loader
      * @param string $filename
      *
      * @return Config
+     *
+     * @throws \InvalidArgumentException
      */
     public function load($filename)
     {
         $data = file_get_contents($filename);
 
-        return $this->configSerializer->deserialize($data, Config::class, 'json');
+        try {
+            $config = $this->serializer->deserialize($data, Config::class, 'json');
+        } catch (UnexpectedValueException $exception) {
+            throw new \InvalidArgumentException('Invalid configuration file', 0, $exception);
+        }
+
+        return $config;
     }
 }
