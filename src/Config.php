@@ -36,11 +36,11 @@ class Config
     private $databaseFilePath;
 
     /**
-     * The database cache directory.
+     * The cache directory.
      *
      * @var string|null
      */
-    private $databaseCacheDirectory;
+    private $cacheDirectory;
 
     /**
      * The log file path.
@@ -84,25 +84,25 @@ class Config
     }
 
     /**
-     * Get database cache directory.
+     * Get cache directory.
      *
      * @return string|null
      */
-    public function getDatabaseCacheDirectory()
+    public function getCacheDirectory()
     {
-        return $this->databaseCacheDirectory;
+        return $this->cacheDirectory;
     }
 
     /**
-     * Set database cache directory.
+     * Set cache directory.
      *
-     * @param string $databaseCacheDirectory
+     * @param string $cacheDirectory
      *
      * @return $this
      */
-    public function setDatabaseCacheDirectory($databaseCacheDirectory)
+    public function setCacheDirectory($cacheDirectory)
     {
-        $this->databaseCacheDirectory = $databaseCacheDirectory;
+        $this->cacheDirectory = $cacheDirectory;
         return $this;
     }
 
