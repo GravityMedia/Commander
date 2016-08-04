@@ -26,6 +26,7 @@ class TaskTest extends \PHPUnit_Framework_TestCase
     public function testTaskCreation()
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
+
         $entity = $this->createMock(TaskEntity::class);
 
         $task = new Task($entityManager, $entity);
@@ -33,18 +34,20 @@ class TaskTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($entity, $task->getEntity());
     }
 
-    /**
+    /*
      * Test that the task can be prioritized.
      */
     public function testTaskPrioritization()
     {
         $entity = $this->createMock(TaskEntity::class);
-        $entity->expects($this->once())
+        $entity
+            ->expects($this->once())
             ->method('setPriority')
             ->with(100);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('flush');
 
         $task = new Task($entityManager, $entity);
@@ -58,12 +61,14 @@ class TaskTest extends \PHPUnit_Framework_TestCase
     public function testTaskBegin()
     {
         $entity = $this->createMock(TaskEntity::class);
-        $entity->expects($this->once())
+        $entity
+            ->expects($this->once())
             ->method('setPid')
             ->with(1001);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('flush');
 
         $task = new Task($entityManager, $entity);
@@ -77,12 +82,14 @@ class TaskTest extends \PHPUnit_Framework_TestCase
     public function testTaskFinish()
     {
         $entity = $this->createMock(TaskEntity::class);
-        $entity->expects($this->once())
+        $entity
+            ->expects($this->once())
             ->method('setExitCode')
             ->with(0);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('flush');
 
         $task = new Task($entityManager, $entity);
@@ -98,10 +105,12 @@ class TaskTest extends \PHPUnit_Framework_TestCase
         $entity = $this->createMock(TaskEntity::class);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('remove')
             ->with($entity);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('flush');
 
         $task = new Task($entityManager, $entity);

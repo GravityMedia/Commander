@@ -14,7 +14,7 @@ use GravityMedia\Commander\Console\Application;
  *
  * @package GravityMedia\CommanderTest\Console
  *
- * @covers GravityMedia\Commander\Console\Application
+ * @covers  GravityMedia\Commander\Console\Application
  */
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {

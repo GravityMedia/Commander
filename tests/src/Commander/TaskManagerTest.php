@@ -32,7 +32,8 @@ class TaskManagerTest extends \PHPUnit_Framework_TestCase
         $repository = $this->createMock(TaskEntityRepository::class);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('getRepository')
             ->with(TaskEntity::class)
             ->will($this->returnValue($repository));
@@ -54,17 +55,20 @@ class TaskManagerTest extends \PHPUnit_Framework_TestCase
         ];
 
         $repository = $this->createMock(TaskEntityRepository::class);
-        $repository->expects($this->once())
+        $repository
+            ->expects($this->once())
             ->method('findAll')
             ->will($this->returnValue($entities));
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('getRepository')
             ->with(TaskEntity::class)
             ->will($this->returnValue($repository));
 
         $taskManager = new TaskManager($entityManager);
+
         $tasks = $taskManager->findAllTasks();
 
         $this->assertCount(3, $tasks);
@@ -83,17 +87,20 @@ class TaskManagerTest extends \PHPUnit_Framework_TestCase
         ];
 
         $repository = $this->createMock(TaskEntityRepository::class);
-        $repository->expects($this->once())
+        $repository
+            ->expects($this->once())
             ->method('findAllTerminated')
             ->will($this->returnValue($entities));
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('getRepository')
             ->with(TaskEntity::class)
             ->will($this->returnValue($repository));
 
         $taskManager = new TaskManager($entityManager);
+
         $tasks = $taskManager->findAllTerminatedTasks();
 
         $this->assertCount(3, $tasks);
@@ -108,12 +115,14 @@ class TaskManagerTest extends \PHPUnit_Framework_TestCase
         $entity = $this->createMock(TaskEntity::class);
 
         $repository = $this->createMock(TaskEntityRepository::class);
-        $repository->expects($this->once())
+        $repository
+            ->expects($this->once())
             ->method('findNext')
             ->will($this->returnValue($entity));
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('getRepository')
             ->with(TaskEntity::class)
             ->will($this->returnValue($repository));
@@ -129,12 +138,14 @@ class TaskManagerTest extends \PHPUnit_Framework_TestCase
     public function testFindingNextTaskReturnsNull()
     {
         $repository = $this->createMock(TaskEntityRepository::class);
-        $repository->expects($this->once())
+        $repository
+            ->expects($this->once())
             ->method('findNext')
             ->will($this->returnValue(null));
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('getRepository')
             ->with(TaskEntity::class)
             ->will($this->returnValue($repository));
@@ -156,12 +167,15 @@ class TaskManagerTest extends \PHPUnit_Framework_TestCase
     public function testCreatingNewTask($commandline, $priority, $expectedPriority)
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('persist');
-        $entityManager->expects($this->once())
+        $entityManager
+            ->expects($this->once())
             ->method('flush');
 
         $taskManager = new TaskManager($entityManager);
+
         $task = $taskManager->newTask($commandline, $priority);
 
         $this->assertInstanceOf(Task::class, $task);

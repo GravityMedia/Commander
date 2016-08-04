@@ -1,0 +1,6 @@
+{
+    "databaseFilePath": "commander.sqlite"
+    "cacheDirectory": ".commander"
+    "logFilePath": "commander.log"
+    "processTimeout": 60
+}
