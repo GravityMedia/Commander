@@ -58,7 +58,7 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInternalType('integer', $entityOne->getPid());
         $this->assertInternalType('integer', $entityTwo->getPid());
-        $this->assertEquals(0, $entityOne->getExitCode());
+        $this->assertNotEquals(1, $entityOne->getExitCode());
         $this->assertEquals(1, $entityTwo->getExitCode());
     }
 }
