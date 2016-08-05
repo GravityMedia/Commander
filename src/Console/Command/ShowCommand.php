@@ -28,8 +28,8 @@ class ShowCommand extends Command
         parent::configure();
 
         $this
-            ->setName('tasks:show')
-            ->setDescription('Show all tasks');
+            ->setName('show')
+            ->setDescription('Show information about all tasks');
     }
 
     /**

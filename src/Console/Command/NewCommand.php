@@ -27,8 +27,8 @@ class NewCommand extends Command
         parent::configure();
 
         $this
-            ->setName('task:new')
-            ->setDescription('Create a new task')
+            ->setName('new')
+            ->setDescription('Create new task')
             ->addArgument(
                 'commandline',
                 InputArgument::REQUIRED,

@@ -26,7 +26,7 @@ class RunCommand extends Command
         parent::configure();
 
         $this
-            ->setName('tasks:run')
+            ->setName('run')
             ->setDescription('Run all tasks');
     }
 

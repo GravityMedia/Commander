@@ -25,8 +25,8 @@ class PruneCommand extends Command
         parent::configure();
 
         $this
-            ->setName('tasks:prune')
-            ->setDescription('Prune tasks');
+            ->setName('prune')
+            ->setDescription('Prune finished tasks');
     }
 
     /**
