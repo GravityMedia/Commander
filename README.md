@@ -15,14 +15,20 @@ Commander is a task manager/runner application for PHP.
 This application has the following requirements:
 
 - PHP 5.6+
+- ext-sqlite
 
 ## Usage
+
+Commander was designed to be used as a type of SQLite based task manager. You can add new tasks to the schedule, run
+them and watch the result. A task consists of a commandline which will be executed and an optional priority. For now
+the tasks are unique and can only be added once to the schedule.
 
 You can use Commander in one of the three following ways.
 
 ### As a Phar
 
-Download the Phar. Commander can then be executed by running:
+This is the recommended way of using Commander. Download the newest Phar from the [releases](../../contributors).
+Commander can then be executed out of the box by running:
 
 ``` bash
 $ php commander.phar
