@@ -27,7 +27,7 @@ You can use Commander in one of the three following ways.
 
 ### As a Phar
 
-This is the recommended way of using Commander. Download the newest Phar from the [releases](../../contributors).
+This is the recommended way of using Commander. Download the newest Phar from the [releases](../../releases).
 Commander can then be executed out of the box by running:
 
 ``` bash
