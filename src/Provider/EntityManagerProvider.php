@@ -10,6 +10,8 @@ namespace GravityMedia\Commander\Provider;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\EventManager;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration as EntityManagerConfig;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -52,6 +54,20 @@ class EntityManagerProvider
      * @var EntityManagerConfig
      */
     protected $entityManagerConfig;
+
+    /**
+     * The event manager.
+     *
+     * @var EventManager
+     */
+    protected $eventManager;
+
+    /**
+     * The connection.
+     *
+     * @var Connection
+     */
+    protected $connection;
 
     /**
      * The entity manager.
@@ -104,20 +120,14 @@ class EntityManagerProvider
     }
 
     /**
-     * Get entity manager.
+     * Get event manager.
      *
-     * @return EntityManagerInterface
+     * @return EventManager
      */
-    public function getEntityManager()
+    public function getEventManager()
     {
-        if (null === $this->entityManager) {
-            $connection = [
-                'driver' => 'pdo_sqlite',
-                'path' => $this->config->getDatabaseFilePath()
-            ];
-
-            $config = $this->getEntityManagerConfig();
-            $metadataDriver = $config->getMetadataDriverImpl();
+        if (null === $this->eventManager) {
+            $metadataDriver = $this->getEntityManagerConfig()->getMetadataDriverImpl();
 
             $timestampableListener = new TimestampableListener();
             if ($metadataDriver instanceof AnnotationDriver) {
@@ -126,6 +136,49 @@ class EntityManagerProvider
 
             $eventManager = new EventManager();
             $eventManager->addEventSubscriber($timestampableListener);
+
+            $this->eventManager = $eventManager;
+        }
+
+        return $this->eventManager;
+    }
+
+    /**
+     * Get connection.
+     *
+     * @return Connection
+     */
+    public function getConnection()
+    {
+        if (null === $this->connection) {
+            $params = [
+                'driver' => 'pdo_sqlite',
+                'path' => $this->config->getDatabaseFilePath()
+            ];
+
+            $config = $this->getEntityManagerConfig();
+
+            $eventManager = $this->getEventManager();
+
+            $this->connection = DriverManager::getConnection($params, $config, $eventManager);
+        }
+
+        return $this->connection;
+    }
+
+    /**
+     * Get entity manager.
+     *
+     * @return EntityManagerInterface
+     */
+    public function getEntityManager()
+    {
+        if (null === $this->entityManager) {
+            $connection = $this->getConnection();
+
+            $config = $this->getEntityManagerConfig();
+
+            $eventManager = $this->getEventManager();
 
             $this->entityManager = EntityManager::create($connection, $config, $eventManager);
         }
