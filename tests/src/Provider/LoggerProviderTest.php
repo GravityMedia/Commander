@@ -21,14 +21,14 @@ use Psr\Log\LoggerInterface;
 class LoggerProviderTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Test the number of handlers provided.
+     * Test that a logger can be created.
      *
      * @dataProvider provideLogFilePaths()
      *
      * @param string $path
      * @param int    $count
      */
-    public function testHandlersProvided($path, $count)
+    public function testLoggerCreation($path, $count)
     {
         $config = $this->createMock(Config::class);
         $config
@@ -39,6 +39,7 @@ class LoggerProviderTest extends \PHPUnit_Framework_TestCase
         $provider = new LoggerProvider($config);
 
         $this->assertCount($count, $provider->getHandlers());
+        $this->assertInstanceOf(LoggerInterface::class, $provider->getLogger());
     }
 
     /**
@@ -52,21 +53,5 @@ class LoggerProviderTest extends \PHPUnit_Framework_TestCase
             [null, 0],
             [sys_get_temp_dir(), 1]
         ];
-    }
-
-    /**
-     * Test that a logger can be created.
-     */
-    public function testLoggerCreation()
-    {
-        $config = $this->createMock(Config::class);
-        $config
-            ->expects($this->once())
-            ->method('getLogFilePath')
-            ->will($this->returnValue(null));
-
-        $provider = new LoggerProvider($config);
-
-        $this->assertInstanceOf(LoggerInterface::class, $provider->getLogger());
     }
 }
