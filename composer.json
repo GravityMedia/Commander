@@ -14,14 +14,14 @@
         "ext-pdo_sqlite": "*",
         "doctrine/orm": "^2.5",
         "gedmo/doctrine-extensions": "^2.4",
-        "monolog/monolog": "^1.19",
+        "monolog/monolog": "^1.21",
         "symfony/console": "^3.1",
         "symfony/process": "^3.1",
         "symfony/serializer": "^3.1",
         "zendframework/zend-servicemanager": "^3.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.3",
+        "phpunit/phpunit": "^5.5",
         "scrutinizer/ocular": "^1.3"
     },
     "autoload": {
@@ -48,5 +48,8 @@
             "/phpunit.*",
             "/tests"
         ]
-    }
+    },
+    "bin": [
+        "bin/commander.php"
+    ]
 }
