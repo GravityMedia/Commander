@@ -13,6 +13,7 @@ use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Gedmo\DoctrineExtensions;
 use GravityMedia\Commander\Commander;
 
 /**
@@ -61,6 +62,8 @@ class MappingDriverProvider
 
             $driverChain = new MappingDriverChain();
             $driverChain->addDriver($annotationDriver, Commander::ENTITY_NAMESPACE);
+
+            DoctrineExtensions::registerAbstractMappingIntoDriverChainORM($driverChain, $reader);
 
             $this->mappingDriver = $driverChain;
         }
