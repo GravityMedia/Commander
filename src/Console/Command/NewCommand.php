@@ -60,7 +60,7 @@ class NewCommand extends Command
             return;
         }
 
-        if ($priority !== $task->getEntity()->getPriority()) {
+        if (null !== $priority && $priority !== $task->getEntity()->getPriority()) {
             $task->prioritize($priority);
             $output->writeln(sprintf('Updated task priority of %s', $task->getEntity()->getId()));
             return;
