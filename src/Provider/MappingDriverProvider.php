@@ -8,7 +8,6 @@
 namespace GravityMedia\Commander\Provider;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
@@ -55,15 +54,6 @@ class MappingDriverProvider
     public function getMappingDriver()
     {
         if (null === $this->mappingDriver) {
-            $annotationFiles = [
-                __DIR__ . '/../../vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php',
-                __DIR__ . '/../../vendor/gedmo/doctrine-extensions/lib/Gedmo/Mapping/Annotation/Timestampable.php',
-            ];
-
-            foreach ($annotationFiles as $annotationFile) {
-                AnnotationRegistry::registerFile($annotationFile);
-            }
-
             /** @var AnnotationReader $reader */
             $reader = new CachedReader(new AnnotationReader(), $this->cache);
 
