@@ -50,6 +50,7 @@
         ]
     },
     "bin": [
+        "bin/commander",
         "bin/commander.php"
     ]
 }
