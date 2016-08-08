@@ -13,19 +13,26 @@ if (!ini_get('date.timezone')) {
 }
 
 /**
- * Initialize autoloader
+ * Initialize loader
  */
 foreach ([__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'] as $file) {
     if (file_exists($file)) {
-        require $file;
+        $loader = require $file;
         break;
     }
 }
 
 /**
- * Unset global autoload file variable
+ * Register loader in annotation registry
  */
-unset($file);
+if (isset($loader)) {
+    \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+}
+
+/**
+ * Unset global autoload variables
+ */
+unset($file, $loader);
 
 /**
  * Initialize container
