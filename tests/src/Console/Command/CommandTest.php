@@ -7,6 +7,7 @@
 
 namespace Gravitymedia\CommanderTest\Console\Command;
 
+use GravityMedia\Commander\Commander;
 use GravityMedia\Commander\Config;
 use GravityMedia\Commander\Config\Loader;
 use GravityMedia\Commander\Console\Command\Command;
@@ -22,6 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @covers  GravityMedia\Commander\Console\Command\Command
  * @uses    GravityMedia\Commander\Console\Helper\ConfigLoaderHelper
+ * @uses    GravityMedia\Commander\Commander
  */
 class CommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -102,5 +104,25 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $command = new Command('command');
 
         $command->getConfiguration();
+    }
+
+    /**
+     * Test that the commander can be returned from command.
+     */
+    public function testCommanderGetter()
+    {
+        $command = new Command('command');
+
+        $input = $this->createMock(InputInterface::class);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $reflection = new \ReflectionClass(Command::class);
+
+        $method = $reflection->getMethod('Initialize');
+        $method->setAccessible(true);
+        $method->invoke($command, $input, $output);
+
+        $this->assertInstanceOf(Commander::class, $command->getCommander());
     }
 }

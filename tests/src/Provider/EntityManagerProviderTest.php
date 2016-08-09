@@ -13,6 +13,7 @@ use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use GravityMedia\Commander\Config;
 use GravityMedia\Commander\Provider\EntityManagerProvider;
 
@@ -50,7 +51,7 @@ class EntityManagerProviderTest extends \PHPUnit_Framework_TestCase
 
         $cache = $this->createMock(Cache::class);
 
-        $mappingDriver = $this->createMock(MappingDriver::class);
+        $mappingDriver = $this->createMock(AnnotationDriver::class);
 
         $provider = new EntityManagerProvider($config, $cache, $mappingDriver);
 
