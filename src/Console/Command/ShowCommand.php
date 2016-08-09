@@ -37,7 +37,8 @@ class ShowCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tasks = $this->getCommander()->getTaskManager()->findAllTasks();
+        $commander = $this->getCommander()->initialize();
+        $tasks = $commander->getTaskManager()->findAllTasks();
 
         if (0 === count($tasks)) {
             $output->writeln('No tasks found');

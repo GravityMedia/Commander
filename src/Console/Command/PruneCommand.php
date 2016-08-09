@@ -34,7 +34,8 @@ class PruneCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $taskManager = $this->getCommander()->getTaskManager();
+        $commander = $this->getCommander()->initialize();
+        $taskManager = $commander->getTaskManager();
 
         $tasks = $taskManager->findAllTerminatedTasks();
 

@@ -93,12 +93,6 @@ class Command extends \Symfony\Component\Console\Command\Command
     {
         if (null === $this->commander) {
             $this->commander = new Commander($this->getConfiguration());
-            if ($this->commander->getSchemaValidator()->schemaInSyncWithMetadata()) {
-                return $this->commander;
-            }
-
-            $classes = $this->commander->getEntityManager()->getMetadataFactory()->getAllMetadata();
-            $this->commander->getSchemaTool()->updateSchema($classes);
         }
 
         return $this->commander;

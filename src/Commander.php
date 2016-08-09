@@ -38,6 +38,11 @@ class Commander
     const LOGGER_NAME = 'COMMANDER';
 
     /**
+     * @var bool
+     */
+    protected $initialized;
+
+    /**
      * @var Config
      */
     protected $config;
@@ -98,7 +103,33 @@ class Commander
      */
     public function __construct(Config $config)
     {
+        $this->initialized = false;
         $this->config = $config;
+    }
+
+    /**
+     * Initialize commander.
+     *
+     * @return $this
+     */
+    public function initialize()
+    {
+        if ($this->initialized) {
+            return $this;
+        }
+
+        if ($this->getSchemaValidator()->schemaInSyncWithMetadata()) {
+            $this->initialized = true;
+
+            return $this;
+        }
+
+        $classes = $this->getEntityManager()->getMetadataFactory()->getAllMetadata();
+        $this->getSchemaTool()->updateSchema($classes);
+
+        $this->initialized = true;
+
+        return $this;
     }
 
     /**
@@ -137,9 +168,15 @@ class Commander
      * Get entity manager.
      *
      * @return EntityManagerInterface
+     *
+     * @throws \LogicException
      */
     public function getEntityManager()
     {
+        if (!$this->initialized) {
+            throw new \LogicException('The entity manager is not available before initialization');
+        }
+
         if (null === $this->entityManager) {
             $provider = new EntityManagerProvider($this->config, $this->getCache(), $this->getMappingDriver());
 
@@ -205,9 +242,7 @@ class Commander
     public function getTaskManager()
     {
         if (null === $this->taskManager) {
-            $entityManager = $this->getEntityManager();
-
-            $this->taskManager = new TaskManager($entityManager);
+            $this->taskManager = new TaskManager($this->getEntityManager());
         }
 
         return $this->taskManager;

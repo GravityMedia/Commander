@@ -35,13 +35,12 @@ class RunCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = $this->getConfiguration();
-        $commander = $this->getCommander();
+        $commander = $this->getCommander()->initialize();
 
         $taskManager = $commander->getTaskManager();
         $logger = $commander->getLogger();
 
         $taskRunner = new TaskRunner($taskManager, $output, $logger);
-        $taskRunner->runAll($config->getProcessTimeout());
+        $taskRunner->runAll($this->getConfiguration()->getProcessTimeout());
     }
 }
