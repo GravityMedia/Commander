@@ -13,11 +13,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * New command class.
+ * Join command class.
  *
  * @package GravityMedia\Commander\Console\Command
  */
-class NewCommand extends Command
+class JoinCommand extends Command
 {
     /**
      * {@inheritdoc}
@@ -27,8 +27,8 @@ class NewCommand extends Command
         parent::configure();
 
         $this
-            ->setName('new')
-            ->setDescription('Create new task')
+            ->setName('join')
+            ->setDescription('Create new task or update existing task')
             ->addArgument(
                 'commandline',
                 InputArgument::REQUIRED,
@@ -63,7 +63,7 @@ class NewCommand extends Command
 
         if (null !== $priority && $priority !== $task->getEntity()->getPriority()) {
             $task->prioritize($priority);
-            $output->writeln(sprintf('Updated task priority of %s', $task->getEntity()->getId()));
+            $output->writeln(sprintf('Updated the priority of task %s', $task->getEntity()->getId()));
             return;
         }
 
