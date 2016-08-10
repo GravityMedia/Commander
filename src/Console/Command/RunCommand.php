@@ -27,7 +27,7 @@ class RunCommand extends Command
 
         $this
             ->setName('run')
-            ->setDescription('Run all tasks');
+            ->setDescription('Run all joined tasks');
     }
 
     /**

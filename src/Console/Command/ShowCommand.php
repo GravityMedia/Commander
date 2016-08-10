@@ -29,7 +29,7 @@ class ShowCommand extends Command
 
         $this
             ->setName('show')
-            ->setDescription('Show information about all tasks');
+            ->setDescription('Show information about all joined tasks');
     }
 
     /**
