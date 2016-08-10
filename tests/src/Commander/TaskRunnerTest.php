@@ -34,7 +34,11 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
         $entityManager = $this->createMock(EntityManagerInterface::class);
 
         $entityOne = new TaskEntity();
-        $entityOne->setCommandline('cd');
+        if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
+            $entityOne->setCommandline('dir');
+        } else {
+            $entityOne->setCommandline('ls -l');
+        }
 
         $entityTwo = new TaskEntity();
         $entityTwo->setCommandline('foobarbaz');
@@ -50,9 +54,6 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
             ));
 
         $output = $this->createMock(OutputInterface::class);
-        $output
-            ->expects($this->exactly(2))
-            ->method('writeln');
 
         $logger = $this->createMock(LoggerInterface::class);
 
@@ -72,15 +73,19 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
 
-        $entityOne = new TaskEntity();
-        $entityOne->setCommandline('cd');
+        $entity = new TaskEntity();
+        if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
+            $entity->setCommandline('dir');
+        } else {
+            $entity->setCommandline('ls -l');
+        }
 
         $taskManager = $this->createMock(TaskManager::class);
         $taskManager
             ->expects($this->exactly(2))
             ->method('findNextTask')
             ->will($this->onConsecutiveCalls(
-                new Task($entityManager, $entityOne),
+                new Task($entityManager, $entity),
                 null
             ));
 
@@ -95,7 +100,7 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
         $taskRunner = new TaskRunner($taskManager, $output, $logger);
         $taskRunner->runAll(60);
 
-        $this->assertInternalType('integer', $entityOne->getPid());
-        $this->assertEquals(0, $entityOne->getExitCode());
+        $this->assertInternalType('integer', $entity->getPid());
+        $this->assertEquals(0, $entity->getExitCode());
     }
 }
