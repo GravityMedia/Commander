@@ -6,6 +6,28 @@
  */
 
 /**
+ * Check PHP version
+ */
+if (version_compare('5.6.0', PHP_VERSION, '>')) {
+    fwrite(STDERR, 'Commander requires PHP 5.6; using the latest version of PHP is highly recommended.' . PHP_EOL);
+
+    exit(1);
+}
+
+/**
+ * Check PDO_SQLITE extension
+ */
+if (!extension_loaded('pdo_sqlite')) {
+    fwrite(
+        STDERR,
+        'Commander requires the PDO SQLite driver; ' .
+        'please enable the PDO_SQLITE extension in your PHP configuration file: ' . php_ini_loaded_file() . PHP_EOL
+    );
+
+    exit(1);
+}
+
+/**
  * Set correct timezone
  */
 if (!ini_get('date.timezone')) {
