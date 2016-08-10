@@ -22,8 +22,8 @@ use GravityMedia\Commander\Console\ApplicationFactory;
  * @uses    GravityMedia\Commander\Config\SerializerFactory
  * @uses    GravityMedia\Commander\Console\Application
  * @uses    GravityMedia\Commander\Console\Command\Command
- * @uses    GravityMedia\Commander\Console\Command\NewCommand
- * @uses    GravityMedia\Commander\Console\Command\PruneCommand
+ * @uses    GravityMedia\Commander\Console\Command\JoinCommand
+ * @uses    GravityMedia\Commander\Console\Command\PurgeCommand
  * @uses    GravityMedia\Commander\Console\Command\RunCommand
  * @uses    GravityMedia\Commander\Console\Command\ShowCommand
  * @uses    GravityMedia\Commander\Console\Helper\ConfigLoaderHelper

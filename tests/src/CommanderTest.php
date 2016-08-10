@@ -57,6 +57,7 @@ class CommanderTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($schemaValidator));
 
         $this->assertSame($commander, $commander->initialize());
+        $this->assertSame($commander, $commander->initialize());
     }
 
     /**

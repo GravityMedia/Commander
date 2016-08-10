@@ -89,7 +89,7 @@ class TaskManagerTest extends \PHPUnit_Framework_TestCase
         $repository = $this->createMock(TaskEntityRepository::class);
         $repository
             ->expects($this->once())
-            ->method('findAllTerminated')
+            ->method('findAllWithNoExitCode')
             ->will($this->returnValue($entities));
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
