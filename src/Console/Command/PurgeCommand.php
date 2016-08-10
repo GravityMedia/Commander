@@ -11,11 +11,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Prune command class.
+ * Purge command class.
  *
  * @package GravityMedia\Commander\Console\Command
  */
-class PruneCommand extends Command
+class PurgeCommand extends Command
 {
     /**
      * {@inheritdoc}
@@ -25,8 +25,8 @@ class PruneCommand extends Command
         parent::configure();
 
         $this
-            ->setName('prune')
-            ->setDescription('Prune finished tasks');
+            ->setName('purge')
+            ->setDescription('Remove all terminated tasks');
     }
 
     /**

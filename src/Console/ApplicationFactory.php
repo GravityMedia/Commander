@@ -39,7 +39,7 @@ class ApplicationFactory implements FactoryInterface
     {
         $application = new Application();
         $application->add($container->get(Command\JoinCommand::class));
-        $application->add($container->get(Command\PruneCommand::class));
+        $application->add($container->get(Command\PurgeCommand::class));
         $application->add($container->get(Command\RunCommand::class));
         $application->add($container->get(Command\ShowCommand::class));
 
