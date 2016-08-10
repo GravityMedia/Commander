@@ -87,7 +87,7 @@ class TaskManager
      */
     public function findAllTerminatedTasks()
     {
-        return $this->mapEntities($this->getRepository()->findAllTerminated());
+        return $this->mapEntities($this->getRepository()->findAllWithNoExitCode());
     }
 
     /**

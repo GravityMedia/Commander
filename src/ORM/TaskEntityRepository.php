@@ -17,11 +17,11 @@ use Doctrine\ORM\EntityRepository;
 class TaskEntityRepository extends EntityRepository
 {
     /**
-     * Finds all terminated entities.
+     * Finds all entities with no exit code.
      *
      * @return TaskEntity[]
      */
-    public function findAllTerminated()
+    public function findAllWithNoExitCode()
     {
         $queryBuilder = $this->createQueryBuilder('task');
         $queryBuilder->where(
