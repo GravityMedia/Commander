@@ -133,7 +133,7 @@ class TaskRunner
     {
         $process = new Process($task->getEntity()->getCommandline());
         $process->setTimeout($timeout);
-        $process->start();
+        $process->start($this);
 
         $task->begin($process->getPid());
 
