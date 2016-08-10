@@ -118,16 +118,14 @@ class Commander
             return $this;
         }
 
-        if ($this->getSchemaValidator()->schemaInSyncWithMetadata()) {
-            $this->initialized = true;
+        $this->initialized = true;
 
+        if ($this->getSchemaValidator()->schemaInSyncWithMetadata()) {
             return $this;
         }
 
         $classes = $this->getEntityManager()->getMetadataFactory()->getAllMetadata();
         $this->getSchemaTool()->updateSchema($classes);
-
-        $this->initialized = true;
 
         return $this;
     }
