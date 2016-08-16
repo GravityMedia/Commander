@@ -8,8 +8,8 @@
 /**
  * Check PHP version
  */
-if (version_compare('5.6.0', PHP_VERSION, '>')) {
-    fwrite(STDERR, 'Commander requires PHP 5.6; using the latest version of PHP is highly recommended.' . PHP_EOL);
+if (version_compare('5.5.0', PHP_VERSION, '>')) {
+    fwrite(STDERR, 'Commander requires PHP 5.5; using the latest version of PHP is highly recommended.' . PHP_EOL);
 
     exit(1);
 }
