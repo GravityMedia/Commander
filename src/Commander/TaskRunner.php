@@ -135,10 +135,10 @@ class TaskRunner
         $process->setTimeout($timeout);
         $process->start($this);
 
-        $task->begin($process->getPid());
+        $task->defer($process->getPid(), function () use ($process) {
+            $process->wait($this);
 
-        $process->wait($this);
-
-        $task->finish($process->getExitCode());
+            return $process->getExitCode();
+        });
     }
 }

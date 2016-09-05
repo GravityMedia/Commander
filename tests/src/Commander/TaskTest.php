@@ -7,6 +7,7 @@
 
 namespace Gravitymedia\CommanderTest\Commander;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use GravityMedia\Commander\Commander\Task;
 use GravityMedia\Commander\ORM\TaskEntity;
@@ -56,45 +57,37 @@ class TaskTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test that the task can be started.
+     * Test that the task can be deferred.
      */
-    public function testTaskBegin()
+    public function testTaskDefer()
     {
         $entity = $this->createMock(TaskEntity::class);
         $entity
             ->expects($this->once())
             ->method('setPid')
             ->with(1001);
-
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager
-            ->expects($this->once())
-            ->method('flush');
-
-        $task = new Task($entityManager, $entity);
-
-        $this->assertSame($task, $task->begin(1001));
-    }
-
-    /**
-     * Test that the task can be finished.
-     */
-    public function testTaskFinish()
-    {
-        $entity = $this->createMock(TaskEntity::class);
         $entity
             ->expects($this->once())
             ->method('setExitCode')
             ->with(0);
 
+        $connection = $this->createMock(Connection::class);
+
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager
             ->expects($this->once())
+            ->method('getConnection')
+            ->will($this->returnValue($connection));
+
+        $entityManager
+            ->expects($this->exactly(2))
             ->method('flush');
 
         $task = new Task($entityManager, $entity);
 
-        $this->assertSame($task, $task->finish(0));
+        $this->assertSame($task, $task->defer(1001, function () {
+            return 0;
+        }));
     }
 
     /**

@@ -7,6 +7,7 @@
 
 namespace Gravitymedia\CommanderTest\Commander;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use GravityMedia\Commander\Commander\Task;
 use GravityMedia\Commander\Commander\TaskManager;
@@ -31,7 +32,13 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
      */
     public function testTaskRunnerRunsAllTasks()
     {
+        $connection = $this->createMock(Connection::class);
+
         $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager
+            ->expects($this->any())
+            ->method('getConnection')
+            ->will($this->returnValue($connection));
 
         $entityOne = new TaskEntity();
         if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
@@ -71,7 +78,13 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
      */
     public function testTaskRunnerRunsAllTasksInQuietMode()
     {
+        $connection = $this->createMock(Connection::class);
+
         $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager
+            ->expects($this->any())
+            ->method('getConnection')
+            ->will($this->returnValue($connection));
 
         $entity = new TaskEntity();
         if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {

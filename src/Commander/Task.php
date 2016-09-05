@@ -69,29 +69,24 @@ class Task
     }
 
     /**
-     * Begin task.
+     * Defer task.
      *
-     * @param int $pid
+     * @param int      $pid
+     * @param callable $deferrer
      *
      * @return $this
      */
-    public function begin($pid)
+    public function defer($pid, $deferrer)
     {
+        $connection = $this->entityManager->getConnection();
+
         $this->entity->setPid($pid);
         $this->entityManager->flush();
 
-        return $this;
-    }
+        $connection->close();
+        $exitCode = $deferrer();
+        $connection->connect();
 
-    /**
-     * Finish task.
-     *
-     * @param int $exitCode
-     *
-     * @return $this
-     */
-    public function finish($exitCode)
-    {
         $this->entity->setExitCode($exitCode);
         $this->entityManager->flush();
 
