@@ -27,8 +27,9 @@ class LoggerProviderTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $path
      * @param int    $count
+     * @param string $class
      */
-    public function testLoggerCreation($path, $count)
+    public function testLoggerCreation($path, $count, $class)
     {
         $config = $this->createMock(Config::class);
         $config
@@ -39,7 +40,11 @@ class LoggerProviderTest extends \PHPUnit_Framework_TestCase
         $provider = new LoggerProvider($config);
 
         $this->assertCount($count, $provider->getHandlers());
-        $this->assertInstanceOf(LoggerInterface::class, $provider->getLogger());
+        if (null === $class) {
+            $this->assertNull($provider->getLogger());
+        } else {
+            $this->assertInstanceOf($class, $provider->getLogger());
+        }
     }
 
     /**
@@ -50,8 +55,8 @@ class LoggerProviderTest extends \PHPUnit_Framework_TestCase
     public function provideLogFilePaths()
     {
         return [
-            [null, 0],
-            [sys_get_temp_dir(), 1]
+            [null, 0, null],
+            [sys_get_temp_dir(), 1, LoggerInterface::class]
         ];
     }
 }

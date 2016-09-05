@@ -234,6 +234,10 @@ class CommanderTest extends \PHPUnit_Framework_TestCase
     public function testGettingLogger()
     {
         $config = $this->createMock(Config::class);
+        $config
+            ->expects($this->once())
+            ->method('getLogFilePath')
+            ->will($this->returnValue('/path/to/log/file.log'));
 
         $commander = new Commander($config);
 

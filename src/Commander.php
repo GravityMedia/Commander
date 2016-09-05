@@ -85,7 +85,7 @@ class Commander
     /**
      * The logger.
      *
-     * @var LoggerInterface
+     * @var null|LoggerInterface
      */
     protected $logger;
 
@@ -219,7 +219,7 @@ class Commander
     /**
      * Get logger.
      *
-     * @return LoggerInterface
+     * @return null|LoggerInterface
      */
     public function getLogger()
     {

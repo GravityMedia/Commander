@@ -36,7 +36,7 @@ class LoggerProvider
     /**
      * The logger.
      *
-     * @var LoggerInterface
+     * @var null|LoggerInterface
      */
     protected $logger;
 
@@ -74,7 +74,7 @@ class LoggerProvider
     /**
      * Get logger.
      *
-     * @return LoggerInterface
+     * @return null|LoggerInterface
      */
     public function getLogger()
     {
@@ -83,6 +83,10 @@ class LoggerProvider
 
             foreach ($this->getHandlers() as $handler) {
                 $logger->pushHandler($handler);
+            }
+
+            if (0 === count($logger->getHandlers())) {
+                return null;
             }
 
             $this->logger = $logger;

@@ -36,18 +36,18 @@ class TaskRunner
     /**
      * The logger.
      *
-     * @var LoggerInterface
+     * @var null|LoggerInterface
      */
     protected $logger;
 
     /**
      * Create task runner object.
      *
-     * @param TaskManager     $taskManager
-     * @param OutputInterface $output
-     * @param LoggerInterface $logger
+     * @param TaskManager          $taskManager
+     * @param OutputInterface      $output
+     * @param null|LoggerInterface $logger
      */
-    public function __construct(TaskManager $taskManager, OutputInterface $output, LoggerInterface $logger)
+    public function __construct(TaskManager $taskManager, OutputInterface $output, LoggerInterface $logger = null)
     {
         $this->taskManager = $taskManager;
         $this->output = $output;
@@ -78,6 +78,10 @@ class TaskRunner
      */
     protected function logMessage($type, $message)
     {
+        if (null === $this->logger) {
+            return;
+        }
+
         $logLevel = Logger::INFO;
         if (Process::ERR === $type) {
             $logLevel = Logger::ERROR;

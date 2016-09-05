@@ -24,6 +24,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.1] - 2016-09-05
 ### Fixed
 - Database connection is being suspended while a process is running to omit errors when new tasks will be joined
+- No output is being printed to STDERR anymore when no logger was specified
 
 ## [1.0.0] - 2016-08-12
 ### Added

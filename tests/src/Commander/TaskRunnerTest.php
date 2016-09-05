@@ -62,9 +62,7 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
 
         $output = $this->createMock(OutputInterface::class);
 
-        $logger = $this->createMock(LoggerInterface::class);
-
-        $taskRunner = new TaskRunner($taskManager, $output, $logger);
+        $taskRunner = new TaskRunner($taskManager, $output);
         $taskRunner->runAll(60);
 
         $this->assertInternalType('integer', $entityOne->getPid());
@@ -86,19 +84,23 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
             ->method('getConnection')
             ->will($this->returnValue($connection));
 
-        $entity = new TaskEntity();
+        $entityOne = new TaskEntity();
         if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
-            $entity->setCommandline('dir');
+            $entityOne->setCommandline('dir');
         } else {
-            $entity->setCommandline('ls -l');
+            $entityOne->setCommandline('ls -l');
         }
+
+        $entityTwo = new TaskEntity();
+        $entityTwo->setCommandline('foobarbaz');
 
         $taskManager = $this->createMock(TaskManager::class);
         $taskManager
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('findNextTask')
             ->will($this->onConsecutiveCalls(
-                new Task($entityManager, $entity),
+                new Task($entityManager, $entityOne),
+                new Task($entityManager, $entityTwo),
                 null
             ));
 
@@ -109,11 +111,14 @@ class TaskRunnerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $logger = $this->createMock(LoggerInterface::class);
+        $logger
+            ->expects($this->atLeastOnce())
+            ->method('log');
 
         $taskRunner = new TaskRunner($taskManager, $output, $logger);
         $taskRunner->runAll(60);
 
-        $this->assertInternalType('integer', $entity->getPid());
-        $this->assertEquals(0, $entity->getExitCode());
+        $this->assertInternalType('integer', $entityOne->getPid());
+        $this->assertEquals(0, $entityOne->getExitCode());
     }
 }
